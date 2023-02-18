@@ -1,6 +1,5 @@
 package com.YammyEater.demo.domain;
 
-import com.YammyEater.demo.constant.TagName;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,6 +21,6 @@ public class Tag {
     @Column(name="TAG_ID")
     private Long id;
 
-    @Enumerated(value = EnumType.STRING)
-    private TagName name;
+    @Column(name="NAME")
+    private String name;
 }

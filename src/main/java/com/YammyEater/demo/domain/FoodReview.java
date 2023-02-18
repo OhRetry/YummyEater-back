@@ -30,7 +30,7 @@ public class FoodReview {
     private Food food;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FOOD_ID")
+    @JoinColumn(name = "USER_ID")
     private User writer;
 
     @Column(name = "RATING")

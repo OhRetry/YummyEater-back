@@ -70,4 +70,8 @@ public class Food {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User writer;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FOOD_ID")
+    private Article article;
 }
