@@ -28,7 +28,7 @@ public class ApiController {
 
     @GetMapping("api/user")
     public Page<UserDto> getUsers(Pageable pageable){
-        var kk = userRepository.findAll(pageable).map(UserDto::from);
+        var kk = userRepository.findAll(pageable).map(UserDto::of);
         return kk;
     }
 
