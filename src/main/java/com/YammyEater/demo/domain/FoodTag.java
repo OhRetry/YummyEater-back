@@ -8,8 +8,12 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @Table(name="FOOD_TAG")
 @IdClass(FoodTag.FoodTagId.class)
 public class FoodTag {

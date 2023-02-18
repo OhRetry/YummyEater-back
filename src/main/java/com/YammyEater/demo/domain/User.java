@@ -16,10 +16,10 @@ import lombok.ToString;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Table(name="USER")
 @Getter
 @Setter
+@Builder
+@Table(name="USER")
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="USER_ID")

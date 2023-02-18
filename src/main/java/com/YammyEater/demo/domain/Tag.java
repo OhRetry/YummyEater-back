@@ -11,9 +11,9 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+@Entity
 @Getter
 @Setter
-@Entity
 @Table(name = "TAG")
 public class Tag {
     @Id
