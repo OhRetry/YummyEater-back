@@ -16,9 +16,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name="FOOD")
+@Getter
+@Setter
 public class Food {
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "FOOD_ID")
@@ -74,4 +78,8 @@ public class Food {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FOOD_ID")
     private Article article;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FOOD_ID")
+    private FoodReviewRatingCount foodReviewRatingCount;
 }
