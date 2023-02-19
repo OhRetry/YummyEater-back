@@ -74,12 +74,6 @@ public class Food {
     @Column(name = "IMG_URL")
     private String imgUrl;
 
-    //영양소
-    @Setter
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FOOD_ID")
-    private Nutrient nutrient;
-
     //연결된 태그들
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
     private List<FoodTag> tags = new ArrayList<>();
@@ -90,13 +84,19 @@ public class Food {
     @JoinColumn(name = "USER_ID")
     private User writer;
 
+    //영양소
     @Setter
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FOOD_ID")
+    @OneToOne(mappedBy = "food", fetch = FetchType.LAZY)
+    private Nutrient nutrient;
+
+    //기사
+    @Setter
+    @OneToOne(mappedBy = "food", fetch = FetchType.LAZY)
     private Article article;
 
+    //리뷰 별점 통계
     @Setter
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FOOD_ID")
+    @OneToOne(mappedBy = "food", fetch = FetchType.LAZY)
     private FoodReviewRatingCount foodReviewRatingCount;
+
 }
