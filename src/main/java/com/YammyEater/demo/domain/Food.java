@@ -99,4 +99,28 @@ public class Food {
     @OneToOne(mappedBy = "food", fetch = FetchType.LAZY)
     private FoodReviewRatingCount foodReviewRatingCount;
 
+
+    @Builder
+    public Food(
+            String name,
+            String title,
+            float rating,
+            FoodType type,
+            String ingredient,
+            Long price,
+            String maker,
+            String imgUrl,
+            User writer
+    ) {
+        this.name = name;
+        this.title = title;
+        this.rating = rating;
+        this.type = type;
+        this.ingredient = ingredient;
+        this.price = price;
+        this.maker = maker;
+        this.imgUrl = imgUrl;
+        this.writer = writer;
+
+    }
 }

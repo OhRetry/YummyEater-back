@@ -9,17 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
-@Builder
 @Table(name = "FOOD_REVIEW")
 public class FoodReview {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +38,17 @@ public class FoodReview {
     @Setter
     @Column(name = "CONTENT")
     private String content;
+
+    @Builder
+    public FoodReview(Food food, User writer, int rating, String content) {
+        this.food = food;
+        this.writer = writer;
+        this.rating = rating;
+        this.content = content;
+    }
+
+    public FoodReview() {
+    }
 }
 
 

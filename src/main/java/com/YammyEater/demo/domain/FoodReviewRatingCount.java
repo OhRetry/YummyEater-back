@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,4 +38,17 @@ public class FoodReviewRatingCount {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FOOD_ID")
     private Food food;
+
+    @Builder
+    public FoodReviewRatingCount(Long id, Long rate1, Long rate2, Long rate3, Long rate4, Long rate5) {
+        this.id = id;
+        this.rate1 = rate1;
+        this.rate2 = rate2;
+        this.rate3 = rate3;
+        this.rate4 = rate4;
+        this.rate5 = rate5;
+    }
+
+    public FoodReviewRatingCount() {
+    }
 }

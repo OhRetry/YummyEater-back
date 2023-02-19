@@ -3,20 +3,15 @@ package com.YammyEater.demo.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "NUTRIENT")
@@ -46,4 +41,19 @@ public class Nutrient {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FOOD_ID")
     private Food food;
+
+    @Builder
+    public Nutrient(Long id, float calorie, float carbohydrate, float sugars, float protein, float fat,
+                    float unsaturatedFat) {
+        this.id = id;
+        this.calorie = calorie;
+        this.carbohydrate = carbohydrate;
+        this.sugars = sugars;
+        this.protein = protein;
+        this.fat = fat;
+        this.unsaturatedFat = unsaturatedFat;
+    }
+
+    public Nutrient() {
+    }
 }
