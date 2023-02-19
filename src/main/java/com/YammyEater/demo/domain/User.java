@@ -17,7 +17,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
 @Table(name="USER")
 public class User {
@@ -25,13 +24,15 @@ public class User {
     @Column(name="USER_ID")
     private Long id;
 
+    @Setter
     @Column(name = "EMAIL")
     private String email;
 
+    @Setter
     @Column(name = "ACCOUNT_PW")
     private String password;
 
+    @Setter
     @Column(name = "USERNAME")
     private String username;
-
 }

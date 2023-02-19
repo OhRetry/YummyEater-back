@@ -19,7 +19,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
 @Table(name = "FOOD_REVIEW")
 public class FoodReview {
@@ -27,17 +26,21 @@ public class FoodReview {
     @Column(name = "FOOD_REVIEW_ID")
     private Long id;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FOOD_ID")
     private Food food;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User writer;
 
+    @Setter
     @Column(name = "RATING")
     private int rating;
 
+    @Setter
     @Column(name = "CONTENT")
     private String content;
 }

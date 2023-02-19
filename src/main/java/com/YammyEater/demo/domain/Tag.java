@@ -13,7 +13,6 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "TAG")
 public class Tag {
     @Id
@@ -21,6 +20,7 @@ public class Tag {
     @Column(name="TAG_ID")
     private Long id;
 
+    @Setter
     @Column(name="NAME")
     private String name;
 }
