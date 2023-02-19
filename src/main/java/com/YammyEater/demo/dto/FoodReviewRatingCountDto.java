@@ -9,7 +9,7 @@ public record FoodReviewRatingCountDto(
         Long rate4,
         Long rate5
 ) {
-    static FoodReviewRatingCountDto of(FoodReviewRatingCount foodReviewRatingCount){
+    public static FoodReviewRatingCountDto of(FoodReviewRatingCount foodReviewRatingCount){
         return new FoodReviewRatingCountDto(
                 foodReviewRatingCount.getRate1(),
                 foodReviewRatingCount.getRate2(),

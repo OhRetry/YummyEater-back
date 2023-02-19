@@ -10,7 +10,7 @@ public record NutrientDto(
         float fat,
         float unsaturatedFat
 ) {
-    static NutrientDto of(Nutrient nutrient) {
+    public static NutrientDto of(Nutrient nutrient) {
         return new NutrientDto(
                 nutrient.getId(),
                 nutrient.getCarbohydrate(),
