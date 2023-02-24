@@ -1,5 +1,6 @@
 spring:
   jpa:
+    database: h2
     defer-datasource-initializtion: true
     show-sql: true
     hibernate:
@@ -12,7 +13,7 @@ spring:
     console:
       enabled: true
   datasource:
-    url: jdbc:h2:mem:yammy;NON_KEYWORDS=USER
+    url: jdbc:h2:mem:yammy
 
 logging:
   level:
