@@ -22,7 +22,7 @@ import lombok.Setter;
 @IdClass(FoodTag.FoodTagId.class)
 public class FoodTag {
 
-    public class FoodTagId implements Serializable {
+    public static class FoodTagId implements Serializable {
         private Long food;
         private Long tag;
     }
