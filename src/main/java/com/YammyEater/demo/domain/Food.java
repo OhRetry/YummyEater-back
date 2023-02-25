@@ -82,7 +82,7 @@ public class Food {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
-    private User writer;
+    private User user;
 
     //영양소
     @Setter
@@ -110,7 +110,7 @@ public class Food {
             Long price,
             String maker,
             String imgUrl,
-            User writer
+            User user
     ) {
         this.name = name;
         this.title = title;
@@ -120,7 +120,7 @@ public class Food {
         this.price = price;
         this.maker = maker;
         this.imgUrl = imgUrl;
-        this.writer = writer;
+        this.user = user;
 
     }
 }
