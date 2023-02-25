@@ -2,7 +2,6 @@ package com.YammyEater.demo.dto;
 
 import com.YammyEater.demo.constant.FoodType;
 import com.YammyEater.demo.domain.Food;
-import com.YammyEater.demo.domain.FoodTag;
 import java.util.List;
 
 public record FoodSimpleResponse(
@@ -24,7 +23,7 @@ public record FoodSimpleResponse(
 
         List<String> tags
 ) {
-    static FoodSimpleResponse of(Food food) {
+    public static FoodSimpleResponse of(Food food) {
         return new FoodSimpleResponse(
                 food.getId(),
                 food.getType(),

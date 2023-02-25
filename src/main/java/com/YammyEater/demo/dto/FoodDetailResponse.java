@@ -30,8 +30,7 @@ public record FoodDetailResponse(
 
         FoodReviewRatingCountDto foodReviewRatingCount
 ) {
-    static FoodDetailResponse of(Food food) {
-
+   public static FoodDetailResponse of(Food food) {
         return new FoodDetailResponse(
                 food.getId(),
                 food.getType(),
