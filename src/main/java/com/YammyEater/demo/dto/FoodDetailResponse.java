@@ -3,7 +3,6 @@ package com.YammyEater.demo.dto;
 import com.YammyEater.demo.constant.FoodType;
 import com.YammyEater.demo.domain.Food;
 import com.YammyEater.demo.domain.FoodReviewRatingCount;
-import com.YammyEater.demo.domain.FoodTag;
 import java.util.List;
 
 public record FoodDetailResponse(
@@ -23,7 +22,7 @@ public record FoodDetailResponse(
         Long price,
         String maker,
 
-        String tags,
+        List<String> tags,
 
         NutrientDto nutrient,
 
@@ -32,8 +31,6 @@ public record FoodDetailResponse(
         FoodReviewRatingCountDto foodReviewRatingCount
 ) {
     static FoodDetailResponse of(Food food) {
-        List<FoodTag> tags = food.getTags();
-        String tagsToStr = String.join(",", tags.stream().map(x -> x.toString()).toList());
 
         return new FoodDetailResponse(
                 food.getId(),
@@ -47,7 +44,7 @@ public record FoodDetailResponse(
                 food.getIngredient(),
                 food.getPrice(),
                 food.getMaker(),
-                tagsToStr,
+                food.getTags().stream().map(x -> x.getTag().getName()).toList(),
                 NutrientDto.of(food.getNutrient()),
                 food.getArticle().getContent(),
                 FoodReviewRatingCountDto.of(food.getFoodReviewRatingCount())

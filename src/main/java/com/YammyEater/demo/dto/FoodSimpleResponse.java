@@ -22,12 +22,9 @@ public record FoodSimpleResponse(
         Long price,
         String maker,
 
-        String tags
+        List<String> tags
 ) {
     static FoodSimpleResponse of(Food food) {
-        List<FoodTag> tags = food.getTags();
-        String tagsToStr = String.join(",", tags.stream().map(x -> x.toString()).toList());
-
         return new FoodSimpleResponse(
                 food.getId(),
                 food.getType(),
@@ -40,7 +37,7 @@ public record FoodSimpleResponse(
                 food.getIngredient(),
                 food.getPrice(),
                 food.getMaker(),
-                tagsToStr
+                food.getTags().stream().map(x -> x.getTag().getName()).toList()
         );
     }
 }
