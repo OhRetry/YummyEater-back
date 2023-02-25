@@ -17,7 +17,6 @@ public record FoodSimpleResponse(
 
         float rating,
 
-        String ingredient,
         Long price,
         String maker,
 
@@ -33,7 +32,6 @@ public record FoodSimpleResponse(
                 food.getUser().getUsername(),
                 food.getImgUrl(),
                 food.getRating(),
-                food.getIngredient(),
                 food.getPrice(),
                 food.getMaker(),
                 food.getTags().stream().map(x -> x.getTag().getName()).toList()
