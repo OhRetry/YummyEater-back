@@ -3,6 +3,7 @@ package com.YammyEater.demo.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -13,35 +14,34 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "FOOD_REVIEW_RATING_COUNT")
 public class FoodReviewRatingCount {
-    @Id
-    @Column(name = "FOOD_ID")
+    @Id @GeneratedValue
+    @Column(name = "FOOD_REVIEW_RATING_COUNT_ID")
     private Long id;
 
+    @Setter
     @Column(name = "RATE1")
     private Long rate1;
 
+    @Setter
     @Column(name = "RATE2")
     private Long rate2;
 
+    @Setter
     @Column(name = "RATE3")
     private Long rate3;
 
+    @Setter
     @Column(name = "RATE4")
     private Long rate4;
 
+    @Setter
     @Column(name = "RATE5")
     private Long rate5;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FOOD_ID")
-    private Food food;
-
     @Builder
-    public FoodReviewRatingCount(Long id, Long rate1, Long rate2, Long rate3, Long rate4, Long rate5) {
-        this.id = id;
+    public FoodReviewRatingCount(Long rate1, Long rate2, Long rate3, Long rate4, Long rate5) {
         this.rate1 = rate1;
         this.rate2 = rate2;
         this.rate3 = rate3;

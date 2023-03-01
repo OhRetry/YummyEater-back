@@ -1,6 +1,7 @@
 package com.YammyEater.demo.domain;
 
 import com.YammyEater.demo.constant.FoodType;
+import com.YammyEater.demo.dto.FoodSimpleResponse;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -86,17 +87,20 @@ public class Food {
 
     //영양소
     @Setter
-    @OneToOne(mappedBy = "food", fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "NUTRIENT_ID")
     private Nutrient nutrient;
 
     //기사
     @Setter
-    @OneToOne(mappedBy = "food", fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ARTICLE_ID")
     private Article article;
 
     //리뷰 별점 통계
     @Setter
-    @OneToOne(mappedBy = "food", fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FOOD_REVIEW_RATING_COUNT_ID")
     private FoodReviewRatingCount foodReviewRatingCount;
 
 
@@ -110,7 +114,10 @@ public class Food {
             Long price,
             String maker,
             String imgUrl,
-            User user
+            User user,
+            Nutrient nutrient,
+            Article article,
+            FoodReviewRatingCount foodReviewRatingCount
     ) {
         this.name = name;
         this.title = title;
@@ -121,6 +128,9 @@ public class Food {
         this.maker = maker;
         this.imgUrl = imgUrl;
         this.user = user;
+        this.nutrient = nutrient;
+        this.article = article;
+        this.foodReviewRatingCount = foodReviewRatingCount;
 
     }
 }

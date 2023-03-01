@@ -3,6 +3,7 @@ package com.YammyEater.demo.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -13,23 +14,18 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "ARTICLE")
 public class Article {
-    @Id
-    @Column(name = "FOOD_ID")
+    @Id @GeneratedValue
+    @Column(name = "ARTICLE_ID")
     private Long id;
 
+    @Setter
     @Column(name = "CONTENT")
     private String content;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FOOD_ID")
-    private Food food;
-
     @Builder
-    public Article(Long id, String content) {
-        this.id = id;
+    public Article(String content) {
         this.content = content;
     }
 
