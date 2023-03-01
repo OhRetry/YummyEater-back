@@ -29,7 +29,7 @@ public class FoodReview {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
-    private User writer;
+    private User user;
 
     @Setter
     @Column(name = "RATING")
@@ -42,7 +42,7 @@ public class FoodReview {
     @Builder
     public FoodReview(Food food, User writer, int rating, String content) {
         this.food = food;
-        this.writer = writer;
+        this.user = writer;
         this.rating = rating;
         this.content = content;
     }
