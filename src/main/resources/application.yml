@@ -9,6 +9,7 @@ spring:
       hibernate:
         use_sql_comments: true
         format_sql: true
+        default_batch_fetch_size: 100
   h2:
     console:
       enabled: true
