@@ -40,9 +40,9 @@ public class FoodReview {
     private String content;
 
     @Builder
-    public FoodReview(Food food, User writer, int rating, String content) {
+    public FoodReview(Food food, User user, int rating, String content) {
         this.food = food;
-        this.user = writer;
+        this.user = user;
         this.rating = rating;
         this.content = content;
     }
