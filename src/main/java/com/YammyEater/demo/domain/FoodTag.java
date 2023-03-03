@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,9 +23,11 @@ import lombok.Setter;
 @IdClass(FoodTag.FoodTagId.class)
 public class FoodTag {
 
+    @EqualsAndHashCode
     public static class FoodTagId implements Serializable {
         private Long food;
         private Long tag;
+
     }
 
     @Id
