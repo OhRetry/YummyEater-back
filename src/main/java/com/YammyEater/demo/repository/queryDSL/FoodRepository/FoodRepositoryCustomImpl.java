@@ -24,6 +24,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.transaction.annotation.Transactional;
 
 public class FoodRepositoryCustomImpl extends QuerydslRepositorySupport implements FoodRepositoryCustom {
 
@@ -32,6 +33,7 @@ public class FoodRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
+    @Transactional
     public Page<FoodSimpleResponse> findFoodSimpleResponsePageByCondition(
             FoodConditionalRequest foodConditionalRequest,
             Pageable pageable
@@ -66,6 +68,8 @@ public class FoodRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
 
         //결과 객체 리스트를 영속성 캐시에서 가져옴.
+        //fetchQuery의 결과를 이용하지 않는 이유는 1:N에서 중복된 엔티티가 나타나기 때문.
+        //hashSet을 이용하면 정렬이 깨진다. 굳이 orderedSet이나 쿼리에 distinct를 사용하지 않고 영속성에서 가져온다.
         List<Food> result = new ArrayList<>();
         for(Long id : ids) {
             result.add(getEntityManager().find(Food.class, id));
