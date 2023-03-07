@@ -29,7 +29,7 @@ import lombok.Setter;
 @Builder
 @Getter
 @Table(name="FOOD")
-public class Food {
+public class Food extends BaseTimeEntity {
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "FOOD_ID")
     private Long id;

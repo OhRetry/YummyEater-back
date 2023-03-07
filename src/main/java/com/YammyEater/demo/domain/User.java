@@ -13,7 +13,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Table(name="USER")
-public class User {
+public class User extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="USER_ID")
     private Long id;

@@ -16,7 +16,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Table(name = "FOOD_REVIEW")
-public class FoodReview {
+public class FoodReview extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "FOOD_REVIEW_ID")
     private Long id;
