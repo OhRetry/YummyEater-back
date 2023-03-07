@@ -14,11 +14,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -26,9 +22,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.transaction.annotation.Transactional;
 
-public class FoodRepositoryCustomImpl extends QuerydslRepositorySupport implements FoodRepositoryCustom {
+public class FindFoodByConditionImpl extends QuerydslRepositorySupport implements FindFoodByCondition {
 
-    public FoodRepositoryCustomImpl() {
+    public FindFoodByConditionImpl() {
         super(Food.class);
     }
 
