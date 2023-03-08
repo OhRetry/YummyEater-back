@@ -3,6 +3,7 @@ package com.YammyEater.demo.dto;
 import com.YammyEater.demo.constant.FoodType;
 import com.YammyEater.demo.domain.Food;
 import com.YammyEater.demo.domain.FoodReviewRatingCount;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public record FoodDetailResponse(
@@ -28,7 +29,10 @@ public record FoodDetailResponse(
 
         String content,
 
-        FoodReviewRatingCountDto foodReviewRatingCount
+        FoodReviewRatingCountDto foodReviewRatingCount,
+
+        String createdAt,
+        String lastModifiedAt
 ) {
    public static FoodDetailResponse of(Food food) {
         return new FoodDetailResponse(
@@ -46,7 +50,9 @@ public record FoodDetailResponse(
                 food.getTags().stream().map(x -> x.getTag().getName()).toList(),
                 NutrientDto.of(food.getNutrient()),
                 food.getArticle().getContent(),
-                FoodReviewRatingCountDto.of(food.getFoodReviewRatingCount())
+                FoodReviewRatingCountDto.of(food.getFoodReviewRatingCount()),
+                food.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME),
+                food.getLastModifiedAt().format(DateTimeFormatter.ISO_DATE_TIME)
         );
     }
 }
