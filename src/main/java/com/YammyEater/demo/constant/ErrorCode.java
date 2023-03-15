@@ -8,9 +8,11 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
 
-    SUCCESS(0,HttpStatus.OK,"SUCCESS"),
-    BAD_REQUEST(10000, HttpStatus.BAD_REQUEST,"aa");
-    private final Integer code;
+    //COMMON
+    SUCCESS("C00000",HttpStatus.OK,"SUCCESS"),
+    BAD_REQUEST("C10000", HttpStatus.BAD_REQUEST,"BAD REQUEST");
+
+    private final String code;
     private final HttpStatus httpStatus;
     private final String message;
 }
