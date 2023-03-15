@@ -100,7 +100,7 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
 
                 String propertyName = order.getProperty();
                 switch (propertyName) {
-                    case "id","rating","name","title","price","maker":
+                    case "id","rating","name","title","price","maker","createdAt":
                         orderSpecifiers.add(
                                 new OrderSpecifier(
                                         dir,
