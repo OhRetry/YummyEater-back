@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,32 +47,42 @@ public class InitDBForTest {
     FoodTagRepository foodTagRepository;
     @Autowired
     ArticleRepository articleRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
+    private final String[] tagNames = {"한식", "일식", "중식", "양식", "고기", "야채", "달콤한", "매운"};
+    private List<Tag> tags = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
     @PostConstruct
     @Transactional
     public void init() {
-        String[] tagNames = {"한식", "일식", "중식", "양식", "고기", "야채", "달콤한", "매운"};
-        List<Tag> tags = new ArrayList<>();
-        List<User> users = new ArrayList<>();
-
+        initTag();
+        initUser();
+        initFood();
+    }
+    private void initTag() {
         for (String tagName : tagNames) {
             Tag newTag = Tag.builder().name(tagName).build();
             tagRepository.save(newTag);
             tags.add(newTag);
         }
+    }
 
+    private void initUser() {
         for (int i = 0; i < 10; i++) {
             User newUser = User.builder()
-                    .email("email@" + i)
-                    .password("qqq")
+                    .email("email" + i + "@test.com")
+                    .password(passwordEncoder.encode("1111"))
                     .username("user" + i)
                     .build();
             userRepository.save(newUser);
             users.add(newUser);
         }
+    }
 
+    private void initFood() {
         Random rand = new Random();
-        for (int i = 0; i < 150; i++) {
+        for (int i = 0; i < 50; i++) {
             //유저
             User food_user = users.get(rand.nextInt(users.size()));
 
@@ -175,6 +186,5 @@ public class InitDBForTest {
             }
 
         }
-
     }
 }
