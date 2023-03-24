@@ -1,29 +1,36 @@
 package com.YammyEater.demo.controller.api;
 
 import com.YammyEater.demo.constant.ErrorCode;
-import com.YammyEater.demo.constant.FoodType;
-import com.YammyEater.demo.domain.Article;
-import com.YammyEater.demo.domain.Food;
-import com.YammyEater.demo.domain.FoodReviewRatingCount;
-import com.YammyEater.demo.domain.FoodTag;
-import com.YammyEater.demo.domain.Nutrient;
-import com.YammyEater.demo.domain.Tag;
-import com.YammyEater.demo.domain.User;
 import com.YammyEater.demo.dto.ApiResponse;
+import com.YammyEater.demo.dto.DuplicateCheckResponse;
+import com.YammyEater.demo.dto.EmailVerifyingRequest;
+import com.YammyEater.demo.dto.EmailVerifyingResponse;
 import com.YammyEater.demo.dto.FoodConditionalRequest;
 import com.YammyEater.demo.dto.FoodDetailResponse;
 import com.YammyEater.demo.dto.FoodReviewDto;
 import com.YammyEater.demo.dto.FoodSimpleResponse;
+import com.YammyEater.demo.dto.SendEmailVerifyingRequest;
+import com.YammyEater.demo.dto.SignInRequest;
+import com.YammyEater.demo.dto.SignInResponse;
 import com.YammyEater.demo.dto.TagDto;
+import com.YammyEater.demo.dto.UserJoinRequest;
 import com.YammyEater.demo.service.FoodReviewService;
 import com.YammyEater.demo.service.FoodService;
 import com.YammyEater.demo.service.TagService;
+import com.YammyEater.demo.service.UserJoinService;
+import com.YammyEater.demo.service.UserService;
+import com.sun.istack.NotNull;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,6 +43,12 @@ public class ApiController {
 
     @Autowired
     FoodReviewService foodReviewService;
+
+    @Autowired
+    UserJoinService userJoinService;
+
+    @Autowired
+    UserService userService;
 
     //ex
     //http://localhost:8080/api/food?type=RECIPE&tags=매운&sort=rating,desc&sort=id,desc&page=1size=5
@@ -70,5 +83,46 @@ public class ApiController {
         return foodReviewService.getFoodReviewPageByFoodId(foodId, pageable);
     }
 
+
+    @PostMapping("/api/user/join/sendVerificationEmail")
+    public ApiResponse sendVerificationEmail(@RequestBody @Valid SendEmailVerifyingRequest sendEmailVerifyingRequest) {
+        userJoinService.sendVerifyingEmail(sendEmailVerifyingRequest.email());
+        return ApiResponse.of(null);
+    }
+
+    @GetMapping("/api/user/join/isDuplicateEmail")
+    public ApiResponse<DuplicateCheckResponse> checkDuplicatedEmail(@RequestParam("email") String email) {
+        boolean duplicated = userService.existsByEmail(email);
+        return ApiResponse.of(new DuplicateCheckResponse(duplicated));
+    }
+
+    @GetMapping("/api/user/join/isDuplicateUserName")
+    public ApiResponse<DuplicateCheckResponse> checkDuplicatedUsername(@RequestParam("userName") String username) {
+        boolean duplicated = userService.existsByUsername(username);
+        return ApiResponse.of(new DuplicateCheckResponse(duplicated));
+    }
+
+    @PostMapping("/api/user/join/verifyEmail")
+    public ApiResponse<EmailVerifyingResponse> verifyEmail(@RequestBody @Valid EmailVerifyingRequest emailVerifyingRequest) {
+        boolean success = userJoinService.verifyEmailByCode(emailVerifyingRequest.code());
+        return ApiResponse.of(new EmailVerifyingResponse(success));
+    }
+
+    @PostMapping("/api/user/join")
+    public ApiResponse<Object> join(@RequestBody @Valid UserJoinRequest userJoinRequest) {
+        userJoinService.joinByCode(
+                userJoinRequest.code(),
+                userJoinRequest.email(),
+                userJoinRequest.username(),
+                userJoinRequest.password()
+        );
+        return ApiResponse.of(null);
+    }
+
+    @PostMapping("/api/user/signIn")
+    public ApiResponse<SignInResponse> signIn(@RequestBody @Valid SignInRequest signInRequest) {
+        String token = userService.authenticate(signInRequest.email(), signInRequest.password());
+        return ApiResponse.of(new SignInResponse(token));
+    }
 
 }
