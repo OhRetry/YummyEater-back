@@ -1,8 +1,7 @@
 package com.YammyEater.demo.config;
 
 import com.YammyEater.demo.security.JwtAuthenticationFilter;
-import com.YammyEater.demo.service.JwtTokenProvider;
-import lombok.RequiredArgsConstructor;
+import com.YammyEater.demo.service.user.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

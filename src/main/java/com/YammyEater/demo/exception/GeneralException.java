@@ -1,6 +1,6 @@
 package com.YammyEater.demo.exception;
 
-import com.YammyEater.demo.constant.ErrorCode;
+import com.YammyEater.demo.constant.error.ErrorCode;
 import lombok.Getter;
 
 @Getter

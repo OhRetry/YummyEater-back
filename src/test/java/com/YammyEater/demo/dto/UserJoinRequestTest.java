@@ -2,6 +2,7 @@ package com.YammyEater.demo.dto;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.YammyEater.demo.dto.user.UserJoinRequest;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;

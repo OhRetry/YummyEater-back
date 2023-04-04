@@ -1,6 +1,6 @@
 package com.YammyEater.demo.controller.api;
 
-import com.YammyEater.demo.constant.ErrorCode;
+import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.dto.ApiResponse;
 import com.YammyEater.demo.exception.GeneralException;
 import org.springframework.http.HttpHeaders;

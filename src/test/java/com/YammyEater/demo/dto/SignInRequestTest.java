@@ -2,18 +2,12 @@ package com.YammyEater.demo.dto;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Set;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import com.YammyEater.demo.dto.user.SignInRequest;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class SignInRequestTest implements BeanValidationSupport {

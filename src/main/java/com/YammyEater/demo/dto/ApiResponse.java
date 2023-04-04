@@ -1,6 +1,6 @@
 package com.YammyEater.demo.dto;
 
-import com.YammyEater.demo.constant.ErrorCode;
+import com.YammyEater.demo.constant.error.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

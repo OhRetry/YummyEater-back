@@ -1,6 +1,6 @@
 package com.YammyEater.demo.security;
 
-import com.YammyEater.demo.service.JwtTokenProvider;
+import com.YammyEater.demo.service.user.JwtTokenProvider;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
