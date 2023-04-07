@@ -3,10 +3,10 @@ package com.YammyEater.demo.repository.food.queryDSL;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 import com.YammyEater.demo.domain.food.Food;
-import com.YammyEater.demo.domain.QFood;
-import com.YammyEater.demo.domain.QFoodTag;
-import com.YammyEater.demo.domain.QTag;
-import com.YammyEater.demo.domain.QUser;
+import com.YammyEater.demo.domain.food.QFood;
+import com.YammyEater.demo.domain.food.QFoodTag;
+import com.YammyEater.demo.domain.food.QTag;
+import com.YammyEater.demo.domain.user.QUser;
 import com.YammyEater.demo.dto.food.FoodConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodSimpleResponse;
 import com.querydsl.core.types.Order;
