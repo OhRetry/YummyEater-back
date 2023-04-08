@@ -27,7 +27,6 @@ import lombok.Setter;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Getter
 @Table(name="FOOD")
 public class Food extends BaseTimeEntity {

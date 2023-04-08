@@ -20,4 +20,15 @@ public record NutrientDto(
                 nutrient.getUnsaturatedFat()
         );
     }
+
+    public Nutrient to() {
+        return Nutrient.builder()
+                .calorie(calorie)
+                .carbohydrate(carbohydrate)
+                .fat(fat)
+                .protein(protein)
+                .sugars(sugars)
+                .unsaturatedFat(unsaturatedFat)
+                .build();
+    }
 }
