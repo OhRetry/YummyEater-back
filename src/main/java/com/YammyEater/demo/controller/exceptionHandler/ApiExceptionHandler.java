@@ -1,8 +1,9 @@
-package com.YammyEater.demo.controller.api;
+package com.YammyEater.demo.controller.exceptionHandler;
 
 import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.dto.ApiResponse;
 import com.YammyEater.demo.exception.GeneralException;
+import com.YammyEater.demo.exception.ResourceDownloadException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<Object> general(GeneralException e, WebRequest request) {
         return handleExceptionInternal(e, e.getErrorCode(), request);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Object> resourceDownload(ResourceDownloadException e) {
+        return ResponseEntity.notFound().build();
     }
 
     @ExceptionHandler
