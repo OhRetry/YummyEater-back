@@ -26,6 +26,14 @@ public class UserService {
         return userRepository.existsByUsername(username);
     }
 
+    public boolean existsById(Long userId) {
+        return userRepository.existsById(userId);
+    }
+
+    public boolean isVaildUser(Long userId) {
+        return existsById(userId);
+    }
+
     //이메일, password로 인증 수행
     //인증 성공 시 user id 반환
     //실패 시 null 반환

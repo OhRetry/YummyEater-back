@@ -1,6 +1,7 @@
 package com.YammyEater.demo.security;
 
 import com.YammyEater.demo.service.user.JwtTokenProvider;
+import com.YammyEater.demo.service.user.UserService;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -21,6 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -41,6 +43,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if(userId == null) {
             return;
         }
+        //해당 userId가 아직도 유효한지 검사
+        if(userService.isVaildUser(userId) == false) {
+            return;
+        }
+
         //인증 성공
         //SecurityContextHolder에 저장
         AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
