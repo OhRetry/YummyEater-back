@@ -35,7 +35,13 @@ spring:
     port: ${REDIS_PORT}
 
 
-logging:
+  servlet:
+    multipart:
+      max-file-size:
+        10MB
+      max-request-size:
+        10MB
+
   level:
     org:
       hibernate:
@@ -52,3 +58,9 @@ user:
 jwt:
   secret_key: ${JWT_SECRET_KEY}
   access_token_expire_minute: 30
+
+upload:
+  local:
+    resource_host: ${RESOURCE_HOST}
+    upload_root: ${UPLOAD_ROOT}
+    urlPath: upload/
