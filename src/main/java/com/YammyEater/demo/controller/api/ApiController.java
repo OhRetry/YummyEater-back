@@ -3,6 +3,8 @@ package com.YammyEater.demo.controller.api;
 import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.dto.ApiResponse;
 import com.YammyEater.demo.dto.DuplicateCheckResponse;
+import com.YammyEater.demo.dto.food.FoodRegisterRequest;
+import com.YammyEater.demo.dto.food.FoodRegisterResponse;
 import com.YammyEater.demo.dto.user.EmailVerifyingRequest;
 import com.YammyEater.demo.dto.user.EmailVerifyingResponse;
 import com.YammyEater.demo.dto.food.FoodConditionalRequest;
@@ -24,6 +26,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,6 +68,12 @@ public class ApiController {
             return ApiResponse.of(null, ErrorCode.BAD_REQUEST);
         }
         return ApiResponse.of(res);
+    }
+
+    @PostMapping("api/food")
+    public ApiResponse<FoodRegisterResponse> registerFood(@AuthenticationPrincipal Long userId, @RequestBody FoodRegisterRequest foodRegisterRequest) {
+        Long foodId = foodService.registerFood(userId, foodRegisterRequest);
+        return ApiResponse.of(new FoodRegisterResponse(foodId));
     }
 
     //ex

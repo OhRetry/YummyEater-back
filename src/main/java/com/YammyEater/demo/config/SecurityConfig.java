@@ -4,6 +4,7 @@ import com.YammyEater.demo.security.JwtAuthenticationFilter;
 import com.YammyEater.demo.service.user.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -29,8 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                //.antMatchers("/api/auth/**")
-                //.authenticated()
+                .antMatchers(HttpMethod.POST, "/api/food")
+                .authenticated()
                 .anyRequest().permitAll();
 
 
