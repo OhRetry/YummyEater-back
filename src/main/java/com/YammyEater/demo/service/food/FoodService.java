@@ -1,5 +1,6 @@
 package com.YammyEater.demo.service.food;
 
+import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.constant.food.FoodType;
 import com.YammyEater.demo.domain.food.Article;
 import com.YammyEater.demo.domain.food.Food;
@@ -12,6 +13,7 @@ import com.YammyEater.demo.dto.food.FoodConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodDetailResponse;
 import com.YammyEater.demo.dto.food.FoodRegisterRequest;
 import com.YammyEater.demo.dto.food.FoodSimpleResponse;
+import com.YammyEater.demo.exception.GeneralException;
 import com.YammyEater.demo.repository.food.ArticleRepository;
 import com.YammyEater.demo.repository.food.FoodRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRatingCountRepository;
@@ -103,6 +105,10 @@ public class FoodService {
         //태그 설정
         for(String tagName : foodRegisterRequest.tags()) {
             Tag tag = tagRepository.findByName(tagName);
+            //존재하지 않는 태그로 등록 요청한 경우
+            if(tag == null) {
+                throw new GeneralException(ErrorCode.BAD_REQUEST);
+            }
             foodTagRepository.save(
                     new FoodTag(food, tag)
             );

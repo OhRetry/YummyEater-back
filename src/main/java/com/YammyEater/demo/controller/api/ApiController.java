@@ -71,7 +71,10 @@ public class ApiController {
     }
 
     @PostMapping("api/food")
-    public ApiResponse<FoodRegisterResponse> registerFood(@AuthenticationPrincipal Long userId, @RequestBody FoodRegisterRequest foodRegisterRequest) {
+    public ApiResponse<FoodRegisterResponse> registerFood(
+            @AuthenticationPrincipal Long userId,
+            @RequestBody @Valid FoodRegisterRequest foodRegisterRequest
+    ) {
         Long foodId = foodService.registerFood(userId, foodRegisterRequest);
         return ApiResponse.of(new FoodRegisterResponse(foodId));
     }
