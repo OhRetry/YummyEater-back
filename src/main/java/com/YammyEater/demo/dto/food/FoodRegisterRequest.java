@@ -1,11 +1,12 @@
 package com.YammyEater.demo.dto.food;
 
+import com.YammyEater.demo.constant.food.FoodType;
 import java.util.List;
 
 public record FoodRegisterRequest(
         String name,
         String title,
-        String type,
+        FoodType type,
         String ingredient,
         Long price,
         String maker,

@@ -88,7 +88,7 @@ public class FoodService {
                 .name(foodRegisterRequest.name())
                 .title(foodRegisterRequest.title())
                 .rating(0)
-                .type(FoodType.valueOf(foodRegisterRequest.type()))
+                .type(foodRegisterRequest.type())
                 .ingredient(foodRegisterRequest.ingredient())
                 .price(foodRegisterRequest.price())
                 .maker(foodRegisterRequest.maker())
