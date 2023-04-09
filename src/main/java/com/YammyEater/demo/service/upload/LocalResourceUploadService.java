@@ -1,8 +1,8 @@
 package com.YammyEater.demo.service.upload;
 
 import com.YammyEater.demo.constant.error.ErrorCode;
-import com.YammyEater.demo.exception.ResourceDownloadException;
-import com.YammyEater.demo.exception.ResourceUploadException;
+import com.YammyEater.demo.exception.upload.ResourceDownloadException;
+import com.YammyEater.demo.exception.upload.ResourceUploadException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

@@ -2,7 +2,7 @@ package com.YammyEater.demo.controller.upload;
 
 import com.YammyEater.demo.Util.FileNameUtil;
 import com.YammyEater.demo.dto.ApiResponse;
-import com.YammyEater.demo.dto.UploadResponse;
+import com.YammyEater.demo.dto.upload.UploadResponse;
 import com.YammyEater.demo.service.upload.ResourceUploadService;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;

@@ -3,7 +3,7 @@ package com.YammyEater.demo.controller.exceptionHandler;
 import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.dto.ApiResponse;
 import com.YammyEater.demo.exception.GeneralException;
-import com.YammyEater.demo.exception.ResourceDownloadException;
+import com.YammyEater.demo.exception.upload.ResourceDownloadException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
