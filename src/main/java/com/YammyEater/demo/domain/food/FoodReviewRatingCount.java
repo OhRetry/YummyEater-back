@@ -51,4 +51,31 @@ public class FoodReviewRatingCount {
 
     public FoodReviewRatingCount() {
     }
+
+    public void increaseRatingCount(int rating) {
+        addRatingCount(rating, 1);
+    }
+
+    public void decreaseRatingCount(int rating) {
+        addRatingCount(rating, -1);
+    }
+
+    private void addRatingCount(int rating, long amount) {
+        switch (rating) {
+            case 1:
+                this.rate1 += amount;
+                break;
+            case 2:
+                this.rate2 += amount;
+                break;
+            case 3:
+                this.rate3 += amount;
+                break;
+            case 4:
+                this.rate4 += amount;
+                break;
+            case 5:
+                this.rate5 += amount;
+        }
+    }
 }
