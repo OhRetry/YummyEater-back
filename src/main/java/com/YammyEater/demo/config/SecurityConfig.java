@@ -27,12 +27,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and()
                 .csrf().disable()
                 .httpBasic().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        //음식 등록
+        http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/food")
-                .authenticated()
-                .anyRequest().permitAll();
+                .authenticated();
+        //리뷰 등록
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/api/food/**/review")
+                .authenticated();
+        //그 외 허용
+        http.authorizeRequests()
+                .anyRequest()
+                .permitAll();
 
 
         http.addFilterAfter(jwtAuthenticationFilter, CorsFilter.class);
