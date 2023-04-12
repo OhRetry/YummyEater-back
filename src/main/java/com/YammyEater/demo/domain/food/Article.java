@@ -21,7 +21,7 @@ public class Article {
     private Long id;
 
     @Setter
-    @Column(name = "CONTENT")
+    @Column(name = "CONTENT", length = 5000)
     private String content;
 
     @Builder

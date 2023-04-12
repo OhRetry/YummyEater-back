@@ -38,7 +38,7 @@ public class FoodReview extends BaseTimeEntity {
     private int rating;
 
     @Setter
-    @Column(name = "CONTENT")
+    @Column(name = "CONTENT", length = 1000)
     private String content;
 
     @Builder
