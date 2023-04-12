@@ -5,6 +5,8 @@ import com.YammyEater.demo.dto.ApiResponse;
 import com.YammyEater.demo.dto.DuplicateCheckResponse;
 import com.YammyEater.demo.dto.food.FoodRegisterRequest;
 import com.YammyEater.demo.dto.food.FoodRegisterResponse;
+import com.YammyEater.demo.dto.food.FoodReviewRegisterRequest;
+import com.YammyEater.demo.dto.food.FoodReviewRegisterResponse;
 import com.YammyEater.demo.dto.user.EmailVerifyingRequest;
 import com.YammyEater.demo.dto.user.EmailVerifyingResponse;
 import com.YammyEater.demo.dto.food.FoodConditionalRequest;
@@ -91,6 +93,16 @@ public class ApiController {
     @GetMapping("api/food/{foodId}/review")
     public Page<FoodReviewDto> getFoodReview(@PathVariable(name = "foodId") Long foodId, Pageable pageable) {
         return foodReviewService.getFoodReviewPageByFoodId(foodId, pageable);
+    }
+
+    @PostMapping("api/food/{foodId}/review")
+    public ApiResponse<FoodReviewRegisterResponse> registerFoodReview(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable(name = "foodId") Long foodId,
+            @RequestBody @Valid FoodReviewRegisterRequest foodReviewRegisterRequest
+    ) {
+        Long reviewId = foodReviewService.registerFoodReview(userId, foodId, foodReviewRegisterRequest);
+        return ApiResponse.of(new FoodReviewRegisterResponse(reviewId));
     }
 
 
