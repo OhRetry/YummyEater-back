@@ -3,6 +3,7 @@ package com.YammyEater.demo.dto.food;
 import com.YammyEater.demo.constant.food.FoodType;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
 
 public record FoodRegisterRequest(
         @NotBlank
@@ -16,6 +17,7 @@ public record FoodRegisterRequest(
         String imgUrl,
         List<String> tags,
         NutrientDto nutrient,
+        @NotBlank @Length(max = 5000)
         String content
 ) {
 }
