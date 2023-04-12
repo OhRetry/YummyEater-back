@@ -56,7 +56,7 @@ public class FoodService {
 
     @Transactional(readOnly = true)
     public FoodDetailResponse findFoodById(Long id) {
-        FoodDetailResponse res = foodRepository.findById(id).map(FoodDetailResponse::of).orElse(null);
+        FoodDetailResponse res = foodRepository.findEagerById(id).map(FoodDetailResponse::of).orElse(null);
         return res;
     }
 

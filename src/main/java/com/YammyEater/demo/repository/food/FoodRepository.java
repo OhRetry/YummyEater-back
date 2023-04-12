@@ -13,5 +13,7 @@ public interface FoodRepository extends JpaRepository<Food, Long>, FindFoodByCon
     List<Food> findAll();
 
     @EntityGraph(attributePaths = {"user", "tags.tag", "nutrient", "article", "foodReviewRatingCount"})
+    Optional<Food> findEagerById(Long id);
+
     Optional<Food> findById(Long id);
 }

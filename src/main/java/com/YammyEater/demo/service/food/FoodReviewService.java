@@ -13,6 +13,6 @@ public class FoodReviewService {
     FoodReviewRepository foodReviewRepository;
 
     public Page<FoodReviewDto> getFoodReviewPageByFoodId(Long foodId, Pageable pageable) {
-        return foodReviewRepository.findByFoodId(foodId, pageable).map(FoodReviewDto::of);
+        return foodReviewRepository.findPageEagerByFoodId(foodId, pageable).map(FoodReviewDto::of);
     }
 }
