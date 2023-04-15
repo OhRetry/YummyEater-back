@@ -1,4 +1,4 @@
-package com.YammyEater.demo.controller.upload;
+package com.YammyEater.demo.controller.api.upload;
 
 import com.YammyEater.demo.Util.FileNameUtil;
 import com.YammyEater.demo.dto.ApiResponse;
