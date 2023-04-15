@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
 
-    final UserJoinService userJoinService;
-    final UserService userService;
+    private final UserJoinService userJoinService;
+    private final UserService userService;
 
     @PostMapping("/api/user/join/sendVerificationEmail")
     public ApiResponse sendVerificationEmail(@RequestBody @Valid SendEmailVerifyingRequest sendEmailVerifyingRequest) {

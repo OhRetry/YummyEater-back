@@ -12,6 +12,7 @@ import com.YammyEater.demo.repository.food.FoodRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRatingCountRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRepository;
 import com.YammyEater.demo.repository.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,20 +20,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class FoodReviewServiceImpl implements FoodReviewService {
-    @Autowired
-    FoodRepository foodRepository;
 
-    @Autowired
-    FoodReviewRepository foodReviewRepository;
+    private final FoodRepository foodRepository;
+    private final FoodReviewRepository foodReviewRepository;
+    private final UserRepository userRepository;
+    private final FoodReviewRatingCountRepository foodReviewRatingCountRepository;
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    FoodReviewRatingCountRepository foodReviewRatingCountRepository;
-
-    @Override
     public Page<FoodReviewDto> getFoodReviewPageByFoodId(Long foodId, Pageable pageable) {
         return foodReviewRepository.findPageEagerByFoodId(foodId, pageable).map(FoodReviewDto::of);
     }

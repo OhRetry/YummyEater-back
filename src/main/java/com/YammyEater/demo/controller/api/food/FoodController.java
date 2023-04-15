@@ -30,9 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class FoodController {
 
-    final FoodService foodService;
-    final TagService tagService;
-    final FoodReviewService foodReviewService;
+    private final FoodService foodService;
+    private final TagService tagService;
+    private final FoodReviewService foodReviewService;
 
     //ex
     //http://localhost:8080/api/food?type=RECIPE&tags=매운&sort=rating,desc&sort=id,desc&page=1size=5

@@ -2,6 +2,7 @@ package com.YammyEater.demo.service.mail;
 
 import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.exception.GeneralException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;
@@ -11,10 +12,10 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
-    @Autowired
-    private JavaMailSender emailSender;
 
+    private final JavaMailSender emailSender;
 
     public void sendEmail(String sendTo, String title, String content) {
         try {

@@ -20,6 +20,7 @@ import com.YammyEater.demo.repository.food.FoodTagRepository;
 import com.YammyEater.demo.repository.food.NutrientRepository;
 import com.YammyEater.demo.repository.food.TagRepository;
 import com.YammyEater.demo.repository.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,27 +28,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class FoodServiceImpl implements FoodService {
-    @Autowired
-    FoodRepository foodRepository;
 
-    @Autowired
-    NutrientRepository nutrientRepository;
-
-    @Autowired
-    ArticleRepository articleRepository;
-
-    @Autowired
-    FoodReviewRatingCountRepository foodReviewRatingCountRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    TagRepository tagRepository;
-
-    @Autowired
-    FoodTagRepository foodTagRepository;
+    private final FoodRepository foodRepository;
+    private final NutrientRepository nutrientRepository;
+    private final ArticleRepository articleRepository;
+    private final FoodReviewRatingCountRepository foodReviewRatingCountRepository;
+    private final FoodTagRepository foodTagRepository;
+    private final TagRepository tagRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Page<FoodSimpleResponse> findFoodByCondition(FoodConditionalRequest foodConditionalRequest, Pageable pageable) {

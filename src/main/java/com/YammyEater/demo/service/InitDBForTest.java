@@ -23,31 +23,25 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import javax.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class InitDBForTest {
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    TagRepository tagRepository;
-    @Autowired
-    FoodRepository foodRepository;
-    @Autowired
-    FoodReviewRepository foodReviewRepository;
-    @Autowired
-    FoodReviewRatingCountRepository foodReviewRatingCountRepository;
-    @Autowired
-    NutrientRepository nutrientRepository;
-    @Autowired
-    FoodTagRepository foodTagRepository;
-    @Autowired
-    ArticleRepository articleRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+
+    private final UserRepository userRepository;
+    private final TagRepository tagRepository;
+    private final FoodRepository foodRepository;
+    private final FoodReviewRepository foodReviewRepository;
+    private final FoodReviewRatingCountRepository foodReviewRatingCountRepository;
+    private final NutrientRepository nutrientRepository;
+    private final FoodTagRepository foodTagRepository;
+    private final ArticleRepository articleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     private final String[] tagNames = {"한식", "일식", "중식", "양식", "고기", "야채", "달콤한", "매운"};
     private List<Tag> tags = new ArrayList<>();
