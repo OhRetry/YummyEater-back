@@ -25,6 +25,6 @@ public class FileNameUtil {
         else if(ext.toLowerCase().equals("gif")) {
             return MediaType.IMAGE_GIF;
         }
-        return MediaType.ALL;
+        return null;
     }
 }
