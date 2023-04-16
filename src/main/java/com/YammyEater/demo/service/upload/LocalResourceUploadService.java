@@ -42,19 +42,6 @@ public class LocalResourceUploadService implements ResourceUploadService {
         return getWebPath(filename);
     }
 
-    @Override
-    public Resource getResource(String resourcePath) {
-        File file = new File(getRealPath(resourcePath));
-        Resource resource;
-        try {
-            resource = new InputStreamResource(new FileInputStream(file));
-        }
-        catch (FileNotFoundException e) {
-            throw new ResourceDownloadException(ErrorCode.NOT_FOUND);
-        }
-        return resource;
-    }
-
     private String getRealPath(String resourcePath) {
         return UPLOAD_ROOT + resourcePath;
     }

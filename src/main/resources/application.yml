@@ -63,4 +63,4 @@ upload:
   local:
     resource_host: ${RESOURCE_HOST}
     upload_root: ${UPLOAD_ROOT}
-    urlPath: upload/
+    urlPath: /upload/
