@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,6 +43,15 @@ public class FoodController {
         return foodService.findFoodByCondition(foodConditionalRequest, pageable);
     }
 
+    @PostMapping("api/food")
+    public ApiResponse<FoodRegisterResponse> registerFood(
+            @AuthenticationPrincipal Long userId,
+            @RequestBody @Valid FoodRegisterRequest foodRegisterRequest
+    ) {
+        Long foodId = foodService.registerFood(userId, foodRegisterRequest);
+        return ApiResponse.of(new FoodRegisterResponse(foodId));
+    }
+
     //ex
     //http://localhost:8080/api/food/13
     @GetMapping("api/food/{id}")
@@ -53,15 +63,14 @@ public class FoodController {
         return ApiResponse.of(res);
     }
 
-    @PostMapping("api/food")
-    public ApiResponse<FoodRegisterResponse> registerFood(
+    @DeleteMapping("api/food/{id}")
+    public ApiResponse<Object> deleteFoodById(
             @AuthenticationPrincipal Long userId,
-            @RequestBody @Valid FoodRegisterRequest foodRegisterRequest
+            @PathVariable(name = "id") Long foodId
     ) {
-        Long foodId = foodService.registerFood(userId, foodRegisterRequest);
-        return ApiResponse.of(new FoodRegisterResponse(foodId));
+        foodService.deleteFood(userId, foodId);
+        return ApiResponse.of(null);
     }
-
     //ex
     //http://localhost:8080/api/tag
     @GetMapping("/api/tag")

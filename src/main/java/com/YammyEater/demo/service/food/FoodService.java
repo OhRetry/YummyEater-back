@@ -13,4 +13,6 @@ public interface FoodService {
     FoodDetailResponse findFoodById(Long id);
 
     Long registerFood(Long userId, FoodRegisterRequest foodRegisterRequest);
+
+    void deleteFood(Long userId, Long foodId);
 }

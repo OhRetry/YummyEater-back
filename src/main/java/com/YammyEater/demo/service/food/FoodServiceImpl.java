@@ -16,6 +16,7 @@ import com.YammyEater.demo.exception.GeneralException;
 import com.YammyEater.demo.repository.food.ArticleRepository;
 import com.YammyEater.demo.repository.food.FoodRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRatingCountRepository;
+import com.YammyEater.demo.repository.food.FoodReviewRepository;
 import com.YammyEater.demo.repository.food.FoodTagRepository;
 import com.YammyEater.demo.repository.food.NutrientRepository;
 import com.YammyEater.demo.repository.food.TagRepository;
@@ -34,6 +35,7 @@ public class FoodServiceImpl implements FoodService {
     private final FoodRepository foodRepository;
     private final NutrientRepository nutrientRepository;
     private final ArticleRepository articleRepository;
+    private final FoodReviewRepository foodReviewRepository;
     private final FoodReviewRatingCountRepository foodReviewRatingCountRepository;
     private final FoodTagRepository foodTagRepository;
     private final TagRepository tagRepository;
@@ -108,5 +110,43 @@ public class FoodServiceImpl implements FoodService {
 
         //등록한 음식의 id 반환
         return food.getId();
+    }
+
+    @Override
+    @Transactional
+    public void deleteFood(Long userId, Long foodId) {
+        //음식이 존재하지 않을 경우 BAD REQUEST
+        Food food = foodRepository
+                .findById(foodId)
+                .orElseThrow(() -> new GeneralException(ErrorCode.BAD_REQUEST));
+        //유저가 존재하지 않을 경우는 일어나서는 안됨.(security에서 확인해서 userId를 넘기기 때문에)
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorCode.FORBIDDEN));
+
+        //작성자가 아닐 경우 FORBIDDEN
+        if(user != food.getUser()) {
+            throw new GeneralException(ErrorCode.FORBIDDEN);
+        }
+
+
+        //Article 삭제
+        articleRepository.delete(food.getArticle());
+
+        //영양소 삭제
+        nutrientRepository.delete(food.getNutrient());
+
+        //리뷰 삭제
+        foodReviewRepository.deleteAllByFood(food);
+
+        //리뷰 통계 삭제
+        foodReviewRatingCountRepository.delete(food.getFoodReviewRatingCount());
+
+        //태그 정보 삭제
+        foodTagRepository.deleteAllByFood(food);
+
+        //food 삭제
+        foodRepository.delete(food);
+
     }
 }
