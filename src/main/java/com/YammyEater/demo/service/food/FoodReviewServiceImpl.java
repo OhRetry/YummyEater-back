@@ -56,4 +56,27 @@ public class FoodReviewServiceImpl implements FoodReviewService {
 
         return foodReview.getId();
     }
+
+    @Override
+    @Transactional
+    public void deleteFoodReview(Long userId, Long reviewId) {
+        //존재하지 않는 리뷰의 경우 BAD REQUEST
+        FoodReview foodReview = foodReviewRepository
+                .findById(reviewId)
+                .orElseThrow(() -> new GeneralException(ErrorCode.BAD_REQUEST));
+
+        User user = userRepository.getById(userId);
+
+        //작성자가 아닐 경우 FORBIDDEN
+        if(user != foodReview.getUser()) {
+            throw new GeneralException(ErrorCode.FORBIDDEN);
+        }
+
+        //리뷰 통계 정보 수정
+        Food food = foodReview.getFood();
+        food.getFoodReviewRatingCount().decreaseRatingCount(3);
+
+        foodReviewRepository.deleteById(reviewId);
+
+    }
 }

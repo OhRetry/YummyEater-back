@@ -9,4 +9,5 @@ public interface FoodReviewService {
     Page<FoodReviewDto> getFoodReviewPageByFoodId(Long foodId, Pageable pageable);
 
     Long registerFoodReview(Long userId, Long foodId, FoodReviewRegisterRequest foodReviewRegisterRequest);
+    void deleteFoodReview(Long userId, Long reviewId);
 }

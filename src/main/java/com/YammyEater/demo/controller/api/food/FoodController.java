@@ -94,4 +94,13 @@ public class FoodController {
         Long reviewId = foodReviewService.registerFoodReview(userId, foodId, foodReviewRegisterRequest);
         return ApiResponse.of(new FoodReviewRegisterResponse(reviewId));
     }
+
+    @DeleteMapping("api/food/review/{reviewId}")
+    public ApiResponse<Object> deleteFoodReview(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable(name = "reviewId") Long reviewId
+    ) {
+        foodReviewService.deleteFoodReview(userId, reviewId);
+        return ApiResponse.of(null);
+    }
 }
