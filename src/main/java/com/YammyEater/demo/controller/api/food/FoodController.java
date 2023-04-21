@@ -6,6 +6,7 @@ import com.YammyEater.demo.dto.food.FoodConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodDetailResponse;
 import com.YammyEater.demo.dto.food.FoodRegisterRequest;
 import com.YammyEater.demo.dto.food.FoodRegisterResponse;
+import com.YammyEater.demo.dto.food.FoodReviewConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodReviewDto;
 import com.YammyEater.demo.dto.food.FoodReviewRegisterRequest;
 import com.YammyEater.demo.dto.food.FoodReviewRegisterResponse;
@@ -81,9 +82,22 @@ public class FoodController {
     //ex
     //http://localhost:8080/api/food/3/review?sort=rating,desc&page=2&size=10
     @GetMapping("api/food/{foodId}/review")
-    public Page<FoodReviewDto> getFoodReview(@PathVariable(name = "foodId") Long foodId, Pageable pageable) {
-        return foodReviewService.getFoodReviewPageByFoodId(foodId, pageable);
+    public Page<FoodReviewDto> getFoodReviewByFoodIdAndCondition(
+            @PathVariable(name = "foodId") Long foodId,
+            FoodReviewConditionalRequest foodReviewConditionalRequest,
+            Pageable pageable
+    ) {
+        return foodReviewService.getFoodReviewPageByCondition(foodId, foodReviewConditionalRequest, pageable);
     }
+
+    @GetMapping("api/food/review")
+    public Page<FoodReviewDto> getFoodReviewByCondition(
+            FoodReviewConditionalRequest foodReviewConditionalRequest,
+            Pageable pageable
+    ) {
+        return foodReviewService.getFoodReviewPageByCondition(null, foodReviewConditionalRequest, pageable);
+    }
+
 
     @PostMapping("api/food/{foodId}/review")
     public ApiResponse<FoodReviewRegisterResponse> registerFoodReview(

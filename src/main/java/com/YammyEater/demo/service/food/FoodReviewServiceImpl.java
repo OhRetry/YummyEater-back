@@ -5,6 +5,7 @@ import com.YammyEater.demo.domain.food.Food;
 import com.YammyEater.demo.domain.food.FoodReview;
 import com.YammyEater.demo.domain.food.FoodReviewRatingCount;
 import com.YammyEater.demo.domain.user.User;
+import com.YammyEater.demo.dto.food.FoodReviewConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodReviewDto;
 import com.YammyEater.demo.dto.food.FoodReviewRegisterRequest;
 import com.YammyEater.demo.exception.GeneralException;
@@ -28,8 +29,13 @@ public class FoodReviewServiceImpl implements FoodReviewService {
     private final UserRepository userRepository;
     private final FoodReviewRatingCountRepository foodReviewRatingCountRepository;
 
-    public Page<FoodReviewDto> getFoodReviewPageByFoodId(Long foodId, Pageable pageable) {
-        return foodReviewRepository.findPageEagerByFoodId(foodId, pageable).map(FoodReviewDto::of);
+    public Page<FoodReviewDto> getFoodReviewPageByCondition(
+            Long foodId,
+            FoodReviewConditionalRequest foodReviewConditionalRequest,
+            Pageable pageable
+    ) {
+        //return foodReviewRepository.findPageEagerByFoodId(foodId, pageable).map(FoodReviewDto::of);
+        return foodReviewRepository.findFoodReviewPageByCondition(foodId, foodReviewConditionalRequest, pageable);
     }
 
     @Override
