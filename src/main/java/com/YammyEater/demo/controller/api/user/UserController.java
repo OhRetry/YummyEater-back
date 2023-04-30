@@ -1,5 +1,6 @@
 package com.YammyEater.demo.controller.api.user;
 
+import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.dto.ApiResponse;
 import com.YammyEater.demo.dto.DuplicateCheckResponse;
 import com.YammyEater.demo.dto.user.EmailVerifyingRequest;
@@ -8,6 +9,8 @@ import com.YammyEater.demo.dto.user.SendEmailVerifyingRequest;
 import com.YammyEater.demo.dto.user.SignInRequest;
 import com.YammyEater.demo.dto.user.SignInResponse;
 import com.YammyEater.demo.dto.user.UserJoinRequest;
+import com.YammyEater.demo.exception.GeneralException;
+import com.YammyEater.demo.service.user.JwtTokenProvider;
 import com.YammyEater.demo.service.user.UserJoinService;
 import com.YammyEater.demo.service.user.UserService;
 import javax.validation.Valid;
@@ -24,6 +27,7 @@ public class UserController {
 
     private final UserJoinService userJoinService;
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/api/user/join/sendVerificationEmail")
     public ApiResponse sendVerificationEmail(@RequestBody @Valid SendEmailVerifyingRequest sendEmailVerifyingRequest) {
@@ -62,7 +66,11 @@ public class UserController {
 
     @PostMapping("/api/user/signIn")
     public ApiResponse<SignInResponse> signIn(@RequestBody @Valid SignInRequest signInRequest) {
-        String token = userService.authenticate(signInRequest.email(), signInRequest.password());
-        return ApiResponse.of(new SignInResponse(token));
+        Long userId = userService.authenticate(signInRequest.email(), signInRequest.password());
+        String accessToken = jwtTokenProvider.createAccessToken(userId);
+        String refreshToken = jwtTokenProvider.createRefreshToken(userId, accessToken);
+        return ApiResponse.of(new SignInResponse(accessToken, refreshToken));
+    }
+
     }
 }

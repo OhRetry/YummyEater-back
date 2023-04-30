@@ -53,14 +53,16 @@ public class UserServiceImpl implements UserService {
         return user.getId();
     }
 
-    //로그인 인증 후 jwt토큰 반환
+    //로그인 인증 후 access token과 refresh token 반환
     //실패 시 예외
     @Override
-    public String authenticate(String email, String password) {
+    public Long authenticate(String email, String password) {
         Long userId = getUserIdByCredentials(email, password);
         if(userId == null) {
             throw new GeneralException(ErrorCode.WRONG_EMAIL_OR_PASSWORD);
         }
-        return jwtTokenProvider.create(userId);
+        return userId;
+
     }
+
 }
