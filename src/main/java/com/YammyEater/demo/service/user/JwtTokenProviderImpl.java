@@ -17,25 +17,24 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
     @Value("${jwt.access_token_expire_minute}")
     private int accessTokenExpireMinute;
 
+    /*
+     * access token 생성 후 반환
+     */
     @Override
-    public String create(Long userId) {
-        Date now = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-        calendar.add(Calendar.MINUTE, accessTokenExpireMinute);
-        Date expiredAt = calendar.getTime();
+    public String createAccessToken(Long userId) {
+        return createToken(String.valueOf(userId), accessTokenExpireMinute);
+    }
 
-        return Jwts.builder()
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-                .setSubject(String.valueOf(userId))
-                .setIssuer("YammyEater")
-                .setIssuedAt(now)
-                .setExpiration(expiredAt)
-                .compact();
     }
 
     @Override
-    public Long validateAndGetUserId(String token) {
+    /*
+     * access token의 jwt 검증
+     * 성공 시 userId 반환
+     * 실패 시 null 반환
+     */
+    @Override
+    public Long validateAccessTokenAndGetUserId(String token) {
 
         Claims claims;
         try {
