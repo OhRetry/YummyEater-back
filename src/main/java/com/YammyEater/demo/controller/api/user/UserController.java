@@ -5,6 +5,8 @@ import com.YammyEater.demo.dto.ApiResponse;
 import com.YammyEater.demo.dto.DuplicateCheckResponse;
 import com.YammyEater.demo.dto.user.EmailVerifyingRequest;
 import com.YammyEater.demo.dto.user.EmailVerifyingResponse;
+import com.YammyEater.demo.dto.user.RefreshAccessTokenRequest;
+import com.YammyEater.demo.dto.user.RefreshAccessTokenResponse;
 import com.YammyEater.demo.dto.user.SendEmailVerifyingRequest;
 import com.YammyEater.demo.dto.user.SignInRequest;
 import com.YammyEater.demo.dto.user.SignInResponse;
@@ -72,5 +74,18 @@ public class UserController {
         return ApiResponse.of(new SignInResponse(accessToken, refreshToken));
     }
 
+    @PostMapping("/api/user/refreshAccessToken")
+    public ApiResponse<RefreshAccessTokenResponse> refreshAccessToken(
+            @RequestBody @Valid RefreshAccessTokenRequest refreshAccessTokenRequest
+    ) {
+
+            String newAccessToken = jwtTokenProvider.refreshAccessToken(
+                    refreshAccessTokenRequest.refreshToken(),
+                    refreshAccessTokenRequest.accessToken()
+                    );
+            if(newAccessToken == null) {
+                throw new GeneralException(ErrorCode.BAD_REQUEST);
+            }
+            return ApiResponse.of(new RefreshAccessTokenResponse(newAccessToken));
     }
 }
