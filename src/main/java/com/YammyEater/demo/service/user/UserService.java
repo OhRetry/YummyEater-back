@@ -12,9 +12,9 @@ public interface UserService {
     //실패 시 null 반환
     Long getUserIdByCredentials(String email, String password);
 
-    //로그인 인증 후 jwt토큰 반환
+    //로그인 인증 후 user id 반환
     //실패 시 예외
-    String authenticate(String email, String password);
+    Long authenticate(String email, String password);
 
     boolean existsById(Long userId);
 

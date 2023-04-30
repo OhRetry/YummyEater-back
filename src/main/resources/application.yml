@@ -58,6 +58,7 @@ user:
 jwt:
   secret_key: ${JWT_SECRET_KEY}
   access_token_expire_minute: 30
+  refresh_token_expire_minute: 20160
 
 upload:
   local:
