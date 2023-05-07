@@ -1,5 +1,8 @@
 package com.YammyEater.demo.service.user;
 
+import com.YammyEater.demo.dto.user.UserDto;
+import com.YammyEater.demo.dto.user.UserInfoChangeRequest;
+
 public interface UserService {
     //어떤 이메일이 회원가입 되었는지 검사
     boolean existsByEmail(String email);
@@ -19,4 +22,7 @@ public interface UserService {
     boolean existsById(Long userId);
 
     boolean isVaildUser(Long userId);
+
+    UserDto getUserInfo(Long userId);
+    void serUserInfo(Long userId, UserInfoChangeRequest userInfoChangeRequest);
 }

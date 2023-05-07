@@ -2,11 +2,14 @@ package com.YammyEater.demo.service.user;
 
 import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.domain.user.User;
+import com.YammyEater.demo.dto.user.UserDto;
+import com.YammyEater.demo.dto.user.UserInfoChangeRequest;
 import com.YammyEater.demo.exception.GeneralException;
 import com.YammyEater.demo.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -65,4 +68,25 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public UserDto getUserInfo(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorCode.BAD_REQUEST));
+        return UserDto.of(user);
+    }
+
+    @Override
+    @Transactional
+    public void serUserInfo(Long userId, UserInfoChangeRequest userInfoChangeRequest) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorCode.BAD_REQUEST));
+        //비밀번호가 다름
+        if(!passwordEncoder.matches(userInfoChangeRequest.password(), user.getPassword())){
+            throw new GeneralException(ErrorCode.FORBIDDEN);
+        }
+        if(userInfoChangeRequest.newUserName() != null) {
+            user.setUsername(userInfoChangeRequest.newUserName());
+        }
+        if(userInfoChangeRequest.newPassword() != null) {
+            user.setPassword(passwordEncoder.encode(userInfoChangeRequest.newPassword()));
+        }
+    }
 }
