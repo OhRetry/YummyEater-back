@@ -10,6 +10,8 @@ import com.YammyEater.demo.dto.user.RefreshAccessTokenResponse;
 import com.YammyEater.demo.dto.user.SendEmailVerifyingRequest;
 import com.YammyEater.demo.dto.user.SignInRequest;
 import com.YammyEater.demo.dto.user.SignInResponse;
+import com.YammyEater.demo.dto.user.UserDto;
+import com.YammyEater.demo.dto.user.UserInfoChangeRequest;
 import com.YammyEater.demo.dto.user.UserJoinRequest;
 import com.YammyEater.demo.exception.GeneralException;
 import com.YammyEater.demo.service.user.JwtTokenProvider;
@@ -17,8 +19,11 @@ import com.YammyEater.demo.service.user.UserJoinService;
 import com.YammyEater.demo.service.user.UserService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -87,5 +92,19 @@ public class UserController {
                 throw new GeneralException(ErrorCode.BAD_REQUEST);
             }
             return ApiResponse.of(new RefreshAccessTokenResponse(newAccessToken));
+    }
+
+    @GetMapping("/api/user/info")
+    public ApiResponse<UserDto> getUserInfo(@AuthenticationPrincipal Long userId) {
+        return ApiResponse.of(userService.getUserInfo(userId));
+    }
+
+    @PatchMapping("/api/user/info")
+    public ApiResponse<Object> setUserInfo(
+            @AuthenticationPrincipal Long userId,
+            @RequestBody @Valid UserInfoChangeRequest userInfoChangeRequest
+    ) {
+        userService.serUserInfo(userId, userInfoChangeRequest);
+        return ApiResponse.of(null);
     }
 }
