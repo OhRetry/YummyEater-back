@@ -4,6 +4,7 @@ import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.dto.ApiResponse;
 import com.YammyEater.demo.dto.food.FoodConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodDetailResponse;
+import com.YammyEater.demo.dto.food.FoodModifyRequest;
 import com.YammyEater.demo.dto.food.FoodRegisterRequest;
 import com.YammyEater.demo.dto.food.FoodRegisterResponse;
 import com.YammyEater.demo.dto.food.FoodReviewConditionalRequest;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,6 +64,16 @@ public class FoodController {
             return ApiResponse.of(null, ErrorCode.BAD_REQUEST);
         }
         return ApiResponse.of(res);
+    }
+
+    @PatchMapping("api/food/{id}")
+    public ApiResponse<Object> modifyFoodById(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable(name = "id") Long foodId,
+            @RequestBody @Valid FoodModifyRequest foodModifyRequest
+            ) {
+        foodService.modifyFood(userId, foodId, foodModifyRequest);
+        return ApiResponse.of(null);
     }
 
     @DeleteMapping("api/food/{id}")

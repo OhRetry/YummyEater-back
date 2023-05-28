@@ -10,6 +10,7 @@ import com.YammyEater.demo.domain.food.Tag;
 import com.YammyEater.demo.domain.user.User;
 import com.YammyEater.demo.dto.food.FoodConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodDetailResponse;
+import com.YammyEater.demo.dto.food.FoodModifyRequest;
 import com.YammyEater.demo.dto.food.FoodRegisterRequest;
 import com.YammyEater.demo.dto.food.FoodSimpleResponse;
 import com.YammyEater.demo.exception.GeneralException;
@@ -22,7 +23,6 @@ import com.YammyEater.demo.repository.food.NutrientRepository;
 import com.YammyEater.demo.repository.food.TagRepository;
 import com.YammyEater.demo.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -149,4 +149,60 @@ public class FoodServiceImpl implements FoodService {
         foodRepository.delete(food);
 
     }
+
+    @Override
+    @Transactional
+    public void modifyFood(Long userId, Long foodId, FoodModifyRequest foodModifyRequest) {
+        //수정하려는 음식이 존재하지 않는 경우 BAD REQUEST
+        Food food = foodRepository.findEagerById(foodId).orElseThrow(() -> new GeneralException(ErrorCode.BAD_REQUEST));
+
+        //수정하려는 음식의 작성자가 본인이 아닐 경우 FORBIDDEN
+        if(userId != food.getUser().getId()) {
+            throw new GeneralException(ErrorCode.FORBIDDEN);
+        }
+
+        if(foodModifyRequest.name() != null) {
+            food.setName(foodModifyRequest.name());
+        }
+        if(foodModifyRequest.title() != null) {
+            food.setTitle(foodModifyRequest.title());
+        }
+        if(foodModifyRequest.type() != null) {
+            food.setType(foodModifyRequest.type());
+        }
+        if(foodModifyRequest.ingredient() != null) {
+            food.setIngredient(foodModifyRequest.ingredient());
+        }
+        if(foodModifyRequest.price() != null) {
+            food.setPrice(foodModifyRequest.price());
+        }
+        if(foodModifyRequest.maker() != null) {
+            food.setMaker(foodModifyRequest.maker());
+        }
+        if(foodModifyRequest.imgUrl() != null) {
+            food.setImgUrl(foodModifyRequest.imgUrl());
+        }
+        if(foodModifyRequest.tags() != null) {
+            //태그 삭제
+            foodTagRepository.deleteAllByFood(food);
+            //태그 설정
+            for(String tagName : foodModifyRequest.tags()) {
+                Tag tag = tagRepository.findByName(tagName);
+                //존재하지 않는 태그로 등록 요청한 경우
+                if(tag == null) {
+                    throw new GeneralException(ErrorCode.BAD_REQUEST);
+                }
+                foodTagRepository.save(
+                        new FoodTag(food, tag)
+                );
+            }
+        }
+        if(foodModifyRequest.nutrient() != null) {
+            foodModifyRequest.nutrient().substitute(food.getNutrient());
+        }
+        if(foodModifyRequest.content() != null) {
+            food.getArticle().setContent(foodModifyRequest.content());
+        }
+    }
+
 }

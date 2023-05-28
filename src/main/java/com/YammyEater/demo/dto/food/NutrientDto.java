@@ -31,4 +31,14 @@ public record NutrientDto(
                 .unsaturatedFat(unsaturatedFat)
                 .build();
     }
+
+    //Nutrient에 값을 대입
+    public void substitute(Nutrient nutrient) {
+        nutrient.setCalorie(calorie);
+        nutrient.setCarbohydrate(carbohydrate);
+        nutrient.setFat(fat);
+        nutrient.setProtein(protein);
+        nutrient.setSugars(sugars);
+        nutrient.setUnsaturatedFat(unsaturatedFat);
+    }
 }
