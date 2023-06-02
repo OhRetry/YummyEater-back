@@ -84,9 +84,12 @@ public class InitDBForTest {
                     .calorie((float)Math.round(rand.nextFloat() * 10000) / 10)
                     .carbohydrate((float)Math.round(rand.nextFloat() * 500) / 10)
                     .sugars((float)Math.round(rand.nextFloat() * 200) / 10)
+                    .dietaryFiber((float)Math.round(rand.nextFloat() * 200) / 10)
                     .protein((float)Math.round(rand.nextFloat() * 200) / 10)
                     .fat((float)Math.round(rand.nextFloat() * 200) / 10)
+                    .saturatedFat((float)Math.round(rand.nextFloat() * 200) / 10)
                     .unsaturatedFat((float)Math.round(rand.nextFloat() * 100) / 10)
+                    .natrium((float)Math.round(rand.nextFloat() * 200) / 10)
                     .build();
             nutrientRepository.save(
                     food_nutrient
