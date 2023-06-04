@@ -85,6 +85,8 @@ public class FoodServiceImpl implements FoodService {
                 .title(foodRegisterRequest.title())
                 .rating(0)
                 .type(foodRegisterRequest.type())
+                .servings(foodRegisterRequest.servings())
+                .amount(foodRegisterRequest.amount())
                 .ingredient(foodRegisterRequest.ingredient())
                 .price(foodRegisterRequest.price())
                 .maker(foodRegisterRequest.maker())
@@ -169,6 +171,12 @@ public class FoodServiceImpl implements FoodService {
         }
         if(foodModifyRequest.type() != null) {
             food.setType(foodModifyRequest.type());
+        }
+        if(foodModifyRequest.servings() != null) {
+            food.setServings(foodModifyRequest.servings());
+        }
+        if(foodModifyRequest.amount() != null) {
+            food.setAmount(foodModifyRequest.amount());
         }
         if(foodModifyRequest.ingredient() != null) {
             food.setIngredient(foodModifyRequest.ingredient());

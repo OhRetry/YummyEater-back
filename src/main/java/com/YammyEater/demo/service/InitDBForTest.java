@@ -116,6 +116,8 @@ public class InitDBForTest {
                             .title("test" + i)
                             .rating(0)
                             .type(FoodType.RECIPE)
+                            .servings(rand.nextInt(4) + 1)
+                            .amount(rand.nextFloat() * 10000)
                             .ingredient("양파, 마늘")
                             .price(Long.valueOf(Math.round(rand.nextFloat() * 100000)))
                             .maker("osm")

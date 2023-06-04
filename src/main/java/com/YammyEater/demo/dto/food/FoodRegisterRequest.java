@@ -11,6 +11,8 @@ public record FoodRegisterRequest(
         @NotBlank
         String title,
         FoodType type,
+        Integer servings,
+        Float amount,
         String ingredient,
         Long price,
         String maker,

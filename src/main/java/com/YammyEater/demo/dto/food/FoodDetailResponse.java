@@ -18,6 +18,9 @@ public record FoodDetailResponse(
 
         float rating,
 
+        Integer servings,
+        Float amount,
+
         String ingredient,
         Long price,
         String maker,
@@ -43,6 +46,8 @@ public record FoodDetailResponse(
                 food.getUser().getUsername(),
                 food.getImgUrl(),
                 food.getRating(),
+                food.getServings(),
+                food.getAmount(),
                 food.getIngredient(),
                 food.getPrice(),
                 food.getMaker(),

@@ -55,6 +55,16 @@ public class Food extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private FoodType type;
 
+    //몇인분인지 정보
+    @Setter
+    @Column(name = "SERVINGS")
+    private Integer servings;
+
+    //중량 정보(완제품 등을 위함)
+    @Setter
+    @Column(name = "AMOUNT")
+    private Float amount;
+
     //음식 재료 설명(닭, 배추 등)
     @Setter
     @Column(name = "INGREDIENT")
@@ -110,6 +120,8 @@ public class Food extends BaseTimeEntity {
             String title,
             float rating,
             FoodType type,
+            Integer servings,
+            Float amount,
             String ingredient,
             Long price,
             String maker,
@@ -123,6 +135,8 @@ public class Food extends BaseTimeEntity {
         this.title = title;
         this.rating = rating;
         this.type = type;
+        this.servings = servings;
+        this.amount = amount;
         this.ingredient = ingredient;
         this.price = price;
         this.maker = maker;
