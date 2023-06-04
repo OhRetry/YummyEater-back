@@ -1,5 +1,6 @@
 package com.YammyEater.demo.domain.food;
 
+import com.YammyEater.demo.domain.food.FoodCategory.FoodCategoryId;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,14 +20,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name="FOOD_TAG")
-@IdClass(FoodTag.FoodTagId.class)
-public class FoodTag {
+@Table(name="FOOD_CATEGORY")
+@IdClass(FoodCategoryId.class)
+public class FoodCategory {
 
     @EqualsAndHashCode
-    public static class FoodTagId implements Serializable {
+    public static class FoodCategoryId implements Serializable {
         private Long food;
-        private Long tag;
+        private Long category;
 
     }
 
@@ -37,6 +38,6 @@ public class FoodTag {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="TAG_ID")
-    private Tag tag;
+    @JoinColumn(name="CATEGORY_ID")
+    private Category category;
 }

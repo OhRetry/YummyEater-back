@@ -12,7 +12,7 @@ public record FoodModifyRequest(
         Long price,
         String maker,
         String imgUrl,
-        List<String> tags,
+        List<String> categories,
         NutrientDto nutrient,
         @Length(max = 5000)
         String content

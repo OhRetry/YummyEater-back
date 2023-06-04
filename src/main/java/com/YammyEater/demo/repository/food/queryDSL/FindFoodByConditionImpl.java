@@ -3,9 +3,9 @@ package com.YammyEater.demo.repository.food.queryDSL;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 import com.YammyEater.demo.domain.food.Food;
+import com.YammyEater.demo.domain.food.QCategory;
 import com.YammyEater.demo.domain.food.QFood;
-import com.YammyEater.demo.domain.food.QFoodTag;
-import com.YammyEater.demo.domain.food.QTag;
+import com.YammyEater.demo.domain.food.QFoodCategory;
 import com.YammyEater.demo.domain.user.QUser;
 import com.YammyEater.demo.dto.food.FoodConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodSimpleResponse;
@@ -36,8 +36,8 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
     ) {
         QFood food = QFood.food;
         QUser user = QUser.user;
-        QFoodTag foodTag = QFoodTag.foodTag;
-        QTag tag = QTag.tag;
+        QFoodCategory foodCategory = QFoodCategory.foodCategory;
+        QCategory category = QCategory.category;
 
         //먼저 조건을 만족하는 food의 id를 얻어옴
         JPQLQuery<Long> query = from(food).select(food.id);
@@ -55,9 +55,9 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
         JPQLQuery<Food> fetchQuery = from(food)
                 .join(food.user, user)
                 .fetchJoin()
-                .join(food.tags, foodTag)
+                .join(food.categories, foodCategory)
                 .fetchJoin()
-                .join(foodTag.tag, tag)
+                .join(foodCategory.category, category)
                 .fetchJoin()
                 .where(food.id.in(ids));
         fetchQuery.fetch();
@@ -120,7 +120,7 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
         applyCondition(subQuery, req);
 
         JPQLQuery<Long> countQuery;
-        if(req.tags() != null) {
+        if(req.categories() != null) {
             QFood foodc = new QFood("foodc");
             countQuery = from(foodc).select(foodc.id.count()).where(foodc.id.in(subQuery));
         }
@@ -135,7 +135,7 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
     ){
         applyFoodCondition(query, req, QFood.food);
         applyUserCondition(query, req, QFood.food, QUser.user);
-        applyTagCondition(query, req, QFood.food, QFoodTag.foodTag, QTag.tag);
+        applyCategoryCondition(query, req, QFood.food, QFoodCategory.foodCategory, QCategory.category);
         return query;
     }
     private <T> JPQLQuery<T> applyFoodCondition(
@@ -175,29 +175,29 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
         return query;
     }
 
-    private <T> JPQLQuery<T> applyTagCondition(
+    private <T> JPQLQuery<T> applyCategoryCondition(
             JPQLQuery<T> query,
             FoodConditionalRequest req,
             QFood food,
-            QFoodTag foodTag,
-            QTag tag
+            QFoodCategory foodCategory,
+            QCategory category
     ) {
-        //tag 조건 검색
-        //요청 tag를 모두 만족해야 함. 대략적으로 세가지 방법이 있음
-        //1. 조건의 태그를 가진 행만 남겨두고 group by로 개수를 세는 방법
-        //2. 계속 foodTag와 tag를 join해가며 조건의 태그와 같은지 검사, 남은 행을 구하는 방법 (검색 태그 개수 * 2만큼 join.)
-        //3. not exist + not exist문으로 바꿔서 처리.(검색 태그에 포함되지 않는 행이 존재하지 않는 것만 뽑아냄)
+        //category 조건 검색
+        //요청 category를 모두 만족해야 함. 대략적으로 세가지 방법이 있음
+        //1. 조건의 category를 가진 행만 남겨두고 group by로 개수를 세는 방법
+        //2. 계속 foodCategory와 category를 join해가며 조건의 category와 같은지 검사, 남은 행을 구하는 방법 (검색 category 개수 * 2만큼 join.)
+        //3. not exist + not exist문으로 바꿔서 처리.(검색 category에 포함되지 않는 행이 존재하지 않는 것만 뽑아냄)
         //1번이 가장 성능이 좋아 보여서 선택했다.
-        if(req.tags() != null) {
+        if(req.categories() != null) {
             //1:N관계 이므로 where절이 들어가면 컬랙션 정합성이 유지되지 않으므로 fetch join은 하지 않음.
-            query.join(food.tags, foodTag);
-            query.join(foodTag.tag, tag);
+            query.join(food.categories, foodCategory);
+            query.join(foodCategory.category, category);
 
-            //모든 tag를 갖는다는 것은 조건을 만족하는 엔티티 개수가 태그의 개수인 것.
-            query.where(tag.name.in(req.tags()));
-            Long tagCnt = Long.valueOf(req.tags().length);
+            //모든 category를 갖는다는 것은 조건을 만족하는 엔티티 개수가 태그의 개수인 것.
+            query.where(category.name.in(req.categories()));
+            Long categoryCnt = Long.valueOf(req.categories().length);
 
-            query.groupBy(food.id).having(food.id.count().eq(tagCnt));
+            query.groupBy(food.id).having(food.id.count().eq(categoryCnt));
 
         }
         return query;

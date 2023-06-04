@@ -75,9 +75,9 @@ public class Food extends BaseTimeEntity {
     @Column(name = "IMG_URL")
     private String imgUrl;
 
-    //연결된 태그들
+    //연결된 카테고리들
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
-    private List<FoodTag> tags = new ArrayList<>();
+    private List<FoodCategory> categories = new ArrayList<>();
 
     //작성자
     @Setter

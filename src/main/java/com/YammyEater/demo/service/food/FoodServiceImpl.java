@@ -4,9 +4,9 @@ import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.domain.food.Article;
 import com.YammyEater.demo.domain.food.Food;
 import com.YammyEater.demo.domain.food.FoodReviewRatingCount;
-import com.YammyEater.demo.domain.food.FoodTag;
+import com.YammyEater.demo.domain.food.FoodCategory;
 import com.YammyEater.demo.domain.food.Nutrient;
-import com.YammyEater.demo.domain.food.Tag;
+import com.YammyEater.demo.domain.food.Category;
 import com.YammyEater.demo.domain.user.User;
 import com.YammyEater.demo.dto.food.FoodConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodDetailResponse;
@@ -18,9 +18,9 @@ import com.YammyEater.demo.repository.food.ArticleRepository;
 import com.YammyEater.demo.repository.food.FoodRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRatingCountRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRepository;
-import com.YammyEater.demo.repository.food.FoodTagRepository;
+import com.YammyEater.demo.repository.food.FoodCategoryRepository;
 import com.YammyEater.demo.repository.food.NutrientRepository;
-import com.YammyEater.demo.repository.food.TagRepository;
+import com.YammyEater.demo.repository.food.CategoryRepository;
 import com.YammyEater.demo.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,8 +37,8 @@ public class FoodServiceImpl implements FoodService {
     private final ArticleRepository articleRepository;
     private final FoodReviewRepository foodReviewRepository;
     private final FoodReviewRatingCountRepository foodReviewRatingCountRepository;
-    private final FoodTagRepository foodTagRepository;
-    private final TagRepository tagRepository;
+    private final FoodCategoryRepository foodCategoryRepository;
+    private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -96,15 +96,15 @@ public class FoodServiceImpl implements FoodService {
                 .build();
         foodRepository.save(food);
 
-        //태그 설정
-        for(String tagName : foodRegisterRequest.tags()) {
-            Tag tag = tagRepository.findByName(tagName);
-            //존재하지 않는 태그로 등록 요청한 경우
-            if(tag == null) {
+        //카테고리 설정
+        for(String categoryName : foodRegisterRequest.categories()) {
+            Category category = categoryRepository.findByName(categoryName);
+            //존재하지 않는 카테고리로 등록 요청한 경우
+            if(category == null) {
                 throw new GeneralException(ErrorCode.BAD_REQUEST);
             }
-            foodTagRepository.save(
-                    new FoodTag(food, tag)
+            foodCategoryRepository.save(
+                    new FoodCategory(food, category)
             );
         }
 
@@ -143,7 +143,7 @@ public class FoodServiceImpl implements FoodService {
         foodReviewRatingCountRepository.delete(food.getFoodReviewRatingCount());
 
         //태그 정보 삭제
-        foodTagRepository.deleteAllByFood(food);
+        foodCategoryRepository.deleteAllByFood(food);
 
         //food 삭제
         foodRepository.delete(food);
@@ -182,18 +182,18 @@ public class FoodServiceImpl implements FoodService {
         if(foodModifyRequest.imgUrl() != null) {
             food.setImgUrl(foodModifyRequest.imgUrl());
         }
-        if(foodModifyRequest.tags() != null) {
+        if(foodModifyRequest.categories() != null) {
             //태그 삭제
-            foodTagRepository.deleteAllByFood(food);
+            foodCategoryRepository.deleteAllByFood(food);
             //태그 설정
-            for(String tagName : foodModifyRequest.tags()) {
-                Tag tag = tagRepository.findByName(tagName);
+            for(String categoryName : foodModifyRequest.categories()) {
+                Category category = categoryRepository.findByName(categoryName);
                 //존재하지 않는 태그로 등록 요청한 경우
-                if(tag == null) {
+                if(category == null) {
                     throw new GeneralException(ErrorCode.BAD_REQUEST);
                 }
-                foodTagRepository.save(
-                        new FoodTag(food, tag)
+                foodCategoryRepository.save(
+                        new FoodCategory(food, category)
                 );
             }
         }

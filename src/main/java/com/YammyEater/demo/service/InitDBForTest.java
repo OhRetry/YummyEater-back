@@ -2,20 +2,20 @@ package com.YammyEater.demo.service;
 
 import com.YammyEater.demo.constant.food.FoodType;
 import com.YammyEater.demo.domain.food.Article;
+import com.YammyEater.demo.domain.food.Category;
 import com.YammyEater.demo.domain.food.Food;
+import com.YammyEater.demo.domain.food.FoodCategory;
 import com.YammyEater.demo.domain.food.FoodReview;
 import com.YammyEater.demo.domain.food.FoodReviewRatingCount;
-import com.YammyEater.demo.domain.food.FoodTag;
 import com.YammyEater.demo.domain.food.Nutrient;
-import com.YammyEater.demo.domain.food.Tag;
 import com.YammyEater.demo.domain.user.User;
 import com.YammyEater.demo.repository.food.ArticleRepository;
 import com.YammyEater.demo.repository.food.FoodRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRatingCountRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRepository;
-import com.YammyEater.demo.repository.food.FoodTagRepository;
+import com.YammyEater.demo.repository.food.FoodCategoryRepository;
 import com.YammyEater.demo.repository.food.NutrientRepository;
-import com.YammyEater.demo.repository.food.TagRepository;
+import com.YammyEater.demo.repository.food.CategoryRepository;
 import com.YammyEater.demo.repository.user.UserRepository;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,7 +24,6 @@ import java.util.Random;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,30 +33,30 @@ import org.springframework.transaction.annotation.Transactional;
 public class InitDBForTest {
 
     private final UserRepository userRepository;
-    private final TagRepository tagRepository;
+    private final CategoryRepository categoryRepository;
     private final FoodRepository foodRepository;
     private final FoodReviewRepository foodReviewRepository;
     private final FoodReviewRatingCountRepository foodReviewRatingCountRepository;
     private final NutrientRepository nutrientRepository;
-    private final FoodTagRepository foodTagRepository;
+    private final FoodCategoryRepository foodCategoryRepository;
     private final ArticleRepository articleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final String[] tagNames = {"한식", "일식", "중식", "양식", "고기", "야채", "달콤한", "매운"};
-    private List<Tag> tags = new ArrayList<>();
+    private final String[] categoryNames = {"한식", "일식", "중식", "양식", "고기", "야채", "달콤한", "매운"};
+    private List<Category> categories = new ArrayList<>();
     private List<User> users = new ArrayList<>();
     @PostConstruct
     @Transactional
     public void init() {
-        initTag();
+        initCategory();
         initUser();
         initFood();
     }
-    private void initTag() {
-        for (String tagName : tagNames) {
-            Tag newTag = Tag.builder().name(tagName).build();
-            tagRepository.save(newTag);
-            tags.add(newTag);
+    private void initCategory() {
+        for (String categoryName : categoryNames) {
+            Category newCategory = Category.builder().name(categoryName).build();
+            categoryRepository.save(newCategory);
+            categories.add(newCategory);
         }
     }
 
@@ -170,14 +169,14 @@ public class InitDBForTest {
 
 
             //태그
-            Set<Tag> food_tags = new HashSet<>();
+            Set<Category> food_categories = new HashSet<>();
             for (int k = 0; k < 3; k++) {
-                food_tags.add(tags.get(rand.nextInt(tags.size())));
+                food_categories.add(categories.get(rand.nextInt(categories.size())));
             }
 
-            for (Tag food_tag : food_tags) {
-                foodTagRepository.save(
-                        new FoodTag(newFood, food_tag)
+            for (Category food_category : food_categories) {
+                foodCategoryRepository.save(
+                        new FoodCategory(newFood, food_category)
                 );
             }
 
