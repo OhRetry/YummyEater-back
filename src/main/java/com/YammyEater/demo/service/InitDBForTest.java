@@ -42,7 +42,13 @@ public class InitDBForTest {
     private final ArticleRepository articleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final String[] categoryNames = {"한식", "일식", "중식", "양식", "고기", "야채", "달콤한", "매운"};
+    private final String[] categoryNames = {
+            "밥", "죽/스프", "면", "떡", "빵", "디저트", "국", "찌개/전골", "샐러드", "반찬", "양념장",
+            "조림", "볶음", "구이", "오븐", "튀김", "부침", "찜",
+            "술안주", "간편식", "다이어트", "보양식", "채식", "명절",
+            "한식", "양식", "일식", "중식", "동남아식", "퓨전식",
+            "육류", "소고기", "돼지고기", "닭고기", "오리고기", "해산물", "어류", "패류/갑각류", "해조류", "알/유제품", "채소", "버섯", "콩/견과류"
+    };
     private List<Category> categories = new ArrayList<>();
     private List<User> users = new ArrayList<>();
     @PostConstruct
@@ -170,7 +176,7 @@ public class InitDBForTest {
             foodRepository.save(newFood);
 
 
-            //태그
+            //카테고리
             Set<Category> food_categories = new HashSet<>();
             for (int k = 0; k < 3; k++) {
                 food_categories.add(categories.get(rand.nextInt(categories.size())));
