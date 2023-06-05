@@ -192,6 +192,9 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
             QCategory category,
             QFoodTag foodTag
     ) {
+        if(req.categories() == null && req.tags() == null) {
+            return query;
+        }
         //category, tag 조건 검색
         //요청 category, tag를 모두 만족해야 함. 대략적으로 세가지 방법이 있음
         //1. 조건의 category, tag를 가진 행만 남겨두고 group by로 개수를 세는 방법(모두 만족 = 개수가 category*tag인 것만 선택)
