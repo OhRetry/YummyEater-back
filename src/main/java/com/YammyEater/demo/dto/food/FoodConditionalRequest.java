@@ -7,6 +7,7 @@ public record FoodConditionalRequest(
         String name,
         String title,
         String[] categories,
+        String[] tags,
         Long userId,
         String userName
 ) {

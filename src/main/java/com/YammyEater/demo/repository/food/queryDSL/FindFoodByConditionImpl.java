@@ -124,7 +124,7 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
         applyCondition(subQuery, req);
 
         JPQLQuery<Long> countQuery;
-        if(req.categories() != null) {
+        if(req.categories() != null || req.tags() != null) {
             QFood foodc = new QFood("foodc");
             countQuery = from(foodc).select(foodc.id.count()).where(foodc.id.in(subQuery));
         }
@@ -139,7 +139,7 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
     ){
         applyFoodCondition(query, req, QFood.food);
         applyUserCondition(query, req, QFood.food, QUser.user);
-        applyCategoryCondition(query, req, QFood.food, QFoodCategory.foodCategory, QCategory.category);
+        applyCategoryAndTagCondition(query, req, QFood.food, QFoodCategory.foodCategory, QCategory.category, QFoodTag.foodTag);
         return query;
     }
     private <T> JPQLQuery<T> applyFoodCondition(
@@ -179,31 +179,37 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
         return query;
     }
 
-    private <T> JPQLQuery<T> applyCategoryCondition(
+    private <T> JPQLQuery<T> applyCategoryAndTagCondition(
             JPQLQuery<T> query,
             FoodConditionalRequest req,
             QFood food,
             QFoodCategory foodCategory,
-            QCategory category
+            QCategory category,
+            QFoodTag foodTag
     ) {
-        //category 조건 검색
-        //요청 category를 모두 만족해야 함. 대략적으로 세가지 방법이 있음
-        //1. 조건의 category를 가진 행만 남겨두고 group by로 개수를 세는 방법
-        //2. 계속 foodCategory와 category를 join해가며 조건의 category와 같은지 검사, 남은 행을 구하는 방법 (검색 category 개수 * 2만큼 join.)
-        //3. not exist + not exist문으로 바꿔서 처리.(검색 category에 포함되지 않는 행이 존재하지 않는 것만 뽑아냄)
+        //category, tag 조건 검색
+        //요청 category, tag를 모두 만족해야 함. 대략적으로 세가지 방법이 있음
+        //1. 조건의 category, tag를 가진 행만 남겨두고 group by로 개수를 세는 방법(모두 만족 = 개수가 category*tag인 것만 선택)
+        //2. 계속 category, tag를 join해가며 조건의 category, tag와 같은지 검사, 남은 행을 구하는 방법 (검색 category 개수 * 2 + 검색 tag 개수만큼 join 필요.)
+        //3. not exist + not exist문으로 바꿔서 처리.(검색 category, tag에 포함되지 않는 행이 존재하지 않는 것만 뽑아냄)
         //1번이 가장 성능이 좋아 보여서 선택했다.
+        Long targetCnt = 1L;
         if(req.categories() != null) {
             //1:N관계 이므로 where절이 들어가면 컬랙션 정합성이 유지되지 않으므로 fetch join은 하지 않음.
             query.join(food.categories, foodCategory);
             query.join(foodCategory.category, category);
 
-            //모든 category를 갖는다는 것은 조건을 만족하는 엔티티 개수가 태그의 개수인 것.
             query.where(category.name.in(req.categories()));
-            Long categoryCnt = Long.valueOf(req.categories().length);
-
-            query.groupBy(food.id).having(food.id.count().eq(categoryCnt));
-
+            targetCnt *= Long.valueOf(req.categories().length);
         }
+        if(req.tags() != null) {
+            query.join(food.tags, foodTag);
+
+            query.where(foodTag.tag.in(req.tags()));
+            targetCnt *= Long.valueOf(req.tags().length);
+        }
+        //모든 category,tag를 갖는다는 것은 조건을 만족하는 행의 개수가 카테고리 개수 * 태그의 개수인 것.
+        query.groupBy(food.id).having(food.id.count().eq(targetCnt));
         return query;
     }
 }
