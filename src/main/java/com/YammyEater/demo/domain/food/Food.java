@@ -4,7 +4,9 @@ import com.YammyEater.demo.constant.food.FoodType;
 import com.YammyEater.demo.domain.BaseTimeEntity;
 import com.YammyEater.demo.domain.user.User;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -87,7 +89,11 @@ public class Food extends BaseTimeEntity {
 
     //연결된 카테고리들
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
-    private List<FoodCategory> categories = new ArrayList<>();
+    private Set<FoodCategory> categories = new HashSet<>();
+
+    //연결된 태그들
+    @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
+    private Set<FoodTag> tags = new HashSet<>();
 
     //작성자
     @Setter

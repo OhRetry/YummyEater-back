@@ -6,6 +6,7 @@ import com.YammyEater.demo.domain.food.Food;
 import com.YammyEater.demo.domain.food.QCategory;
 import com.YammyEater.demo.domain.food.QFood;
 import com.YammyEater.demo.domain.food.QFoodCategory;
+import com.YammyEater.demo.domain.food.QFoodTag;
 import com.YammyEater.demo.domain.user.QUser;
 import com.YammyEater.demo.dto.food.FoodConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodSimpleResponse;
@@ -37,6 +38,7 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
         QFood food = QFood.food;
         QUser user = QUser.user;
         QFoodCategory foodCategory = QFoodCategory.foodCategory;
+        QFoodTag foodTag = QFoodTag.foodTag;
         QCategory category = QCategory.category;
 
         //먼저 조건을 만족하는 food의 id를 얻어옴
@@ -58,6 +60,8 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
                 .join(food.categories, foodCategory)
                 .fetchJoin()
                 .join(foodCategory.category, category)
+                .fetchJoin()
+                .join(food.tags, foodTag)
                 .fetchJoin()
                 .where(food.id.in(ids));
         fetchQuery.fetch();

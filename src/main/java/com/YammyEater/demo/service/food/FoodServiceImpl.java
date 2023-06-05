@@ -5,6 +5,7 @@ import com.YammyEater.demo.domain.food.Article;
 import com.YammyEater.demo.domain.food.Food;
 import com.YammyEater.demo.domain.food.FoodReviewRatingCount;
 import com.YammyEater.demo.domain.food.FoodCategory;
+import com.YammyEater.demo.domain.food.FoodTag;
 import com.YammyEater.demo.domain.food.Nutrient;
 import com.YammyEater.demo.domain.food.Category;
 import com.YammyEater.demo.domain.user.User;
@@ -19,6 +20,7 @@ import com.YammyEater.demo.repository.food.FoodRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRatingCountRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRepository;
 import com.YammyEater.demo.repository.food.FoodCategoryRepository;
+import com.YammyEater.demo.repository.food.FoodTagRepository;
 import com.YammyEater.demo.repository.food.NutrientRepository;
 import com.YammyEater.demo.repository.food.CategoryRepository;
 import com.YammyEater.demo.repository.user.UserRepository;
@@ -39,6 +41,7 @@ public class FoodServiceImpl implements FoodService {
     private final FoodReviewRatingCountRepository foodReviewRatingCountRepository;
     private final FoodCategoryRepository foodCategoryRepository;
     private final CategoryRepository categoryRepository;
+    private final FoodTagRepository foodTagRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -99,15 +102,26 @@ public class FoodServiceImpl implements FoodService {
         foodRepository.save(food);
 
         //카테고리 설정
-        for(String categoryName : foodRegisterRequest.categories()) {
-            Category category = categoryRepository.findByName(categoryName);
-            //존재하지 않는 카테고리로 등록 요청한 경우
-            if(category == null) {
-                throw new GeneralException(ErrorCode.BAD_REQUEST);
+        if(foodRegisterRequest.categories() != null) {
+            for (String categoryName : foodRegisterRequest.categories()) {
+                Category category = categoryRepository.findByName(categoryName);
+                //존재하지 않는 카테고리로 등록 요청한 경우
+                if (category == null) {
+                    throw new GeneralException(ErrorCode.BAD_REQUEST);
+                }
+                foodCategoryRepository.save(
+                        new FoodCategory(food, category)
+                );
             }
-            foodCategoryRepository.save(
-                    new FoodCategory(food, category)
-            );
+        }
+
+        //태그 설정
+        if(foodRegisterRequest.tags() != null) {
+            for (String tagName : foodRegisterRequest.tags()) {
+                foodTagRepository.save(
+                        new FoodTag(food, tagName)
+                );
+            }
         }
 
         //등록한 음식의 id 반환
@@ -144,8 +158,11 @@ public class FoodServiceImpl implements FoodService {
         //리뷰 통계 삭제
         foodReviewRatingCountRepository.delete(food.getFoodReviewRatingCount());
 
-        //태그 정보 삭제
+        //카테고리 정보 삭제
         foodCategoryRepository.deleteAllByFood(food);
+
+        //태그 정보 삭제
+        foodTagRepository.deleteAllByFood(food);
 
         //food 삭제
         foodRepository.delete(food);
@@ -202,6 +219,14 @@ public class FoodServiceImpl implements FoodService {
                 }
                 foodCategoryRepository.save(
                         new FoodCategory(food, category)
+                );
+            }
+        }
+        if(foodModifyRequest.tags() != null) {
+            foodTagRepository.deleteAllByFood(food);
+            for(String tagName : foodModifyRequest.tags()) {
+                foodTagRepository.save(
+                        new FoodTag(food, tagName)
                 );
             }
         }

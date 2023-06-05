@@ -26,7 +26,7 @@ public record FoodDetailResponse(
         String maker,
 
         List<String> categories,
-
+        List<String> tags,
         NutrientDto nutrient,
 
         String content,
@@ -52,6 +52,7 @@ public record FoodDetailResponse(
                 food.getPrice(),
                 food.getMaker(),
                 food.getCategories().stream().map(x -> x.getCategory().getName()).toList(),
+                food.getTags().stream().map(x -> x.getTag()).toList(),
                 NutrientDto.of(food.getNutrient()),
                 food.getArticle().getContent(),
                 FoodReviewRatingCountDto.of(food.getFoodReviewRatingCount()),

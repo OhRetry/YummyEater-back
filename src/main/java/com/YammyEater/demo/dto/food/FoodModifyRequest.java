@@ -15,6 +15,7 @@ public record FoodModifyRequest(
         String maker,
         String imgUrl,
         List<String> categories,
+        List<String> tags,
         NutrientDto nutrient,
         @Length(max = 5000)
         String content

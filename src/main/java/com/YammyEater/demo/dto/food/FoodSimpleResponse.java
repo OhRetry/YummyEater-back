@@ -22,6 +22,7 @@ public record FoodSimpleResponse(
         String maker,
 
         List<String> categories,
+        List<String> tags,
 
         String createdAt,
         String lastModifiedAt
@@ -39,6 +40,7 @@ public record FoodSimpleResponse(
                 food.getPrice(),
                 food.getMaker(),
                 food.getCategories().stream().map(x -> x.getCategory().getName()).toList(),
+                food.getTags().stream().map(x -> x.getTag()).toList(),
                 food.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME),
                 food.getLastModifiedAt().format(DateTimeFormatter.ISO_DATE_TIME)
         );

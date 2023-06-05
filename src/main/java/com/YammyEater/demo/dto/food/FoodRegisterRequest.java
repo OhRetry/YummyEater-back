@@ -18,6 +18,7 @@ public record FoodRegisterRequest(
         String maker,
         String imgUrl,
         List<String> categories,
+        List<String> tags,
         NutrientDto nutrient,
         @NotBlank @Length(max = 5000)
         String content

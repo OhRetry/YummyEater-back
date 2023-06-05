@@ -7,6 +7,7 @@ import com.YammyEater.demo.domain.food.Food;
 import com.YammyEater.demo.domain.food.FoodCategory;
 import com.YammyEater.demo.domain.food.FoodReview;
 import com.YammyEater.demo.domain.food.FoodReviewRatingCount;
+import com.YammyEater.demo.domain.food.FoodTag;
 import com.YammyEater.demo.domain.food.Nutrient;
 import com.YammyEater.demo.domain.user.User;
 import com.YammyEater.demo.repository.food.ArticleRepository;
@@ -14,6 +15,7 @@ import com.YammyEater.demo.repository.food.FoodRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRatingCountRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRepository;
 import com.YammyEater.demo.repository.food.FoodCategoryRepository;
+import com.YammyEater.demo.repository.food.FoodTagRepository;
 import com.YammyEater.demo.repository.food.NutrientRepository;
 import com.YammyEater.demo.repository.food.CategoryRepository;
 import com.YammyEater.demo.repository.user.UserRepository;
@@ -39,6 +41,7 @@ public class InitDBForTest {
     private final FoodReviewRatingCountRepository foodReviewRatingCountRepository;
     private final NutrientRepository nutrientRepository;
     private final FoodCategoryRepository foodCategoryRepository;
+    private final FoodTagRepository foodTagRepository;
     private final ArticleRepository articleRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -185,6 +188,14 @@ public class InitDBForTest {
             for (Category food_category : food_categories) {
                 foodCategoryRepository.save(
                         new FoodCategory(newFood, food_category)
+                );
+            }
+
+            //태그
+            String[] testTags = {"테스트태그1", "테스트태그2", "테스트태그3"};
+            for(String tag:testTags) {
+                foodTagRepository.save(
+                        new FoodTag(newFood, tag)
                 );
             }
 
