@@ -15,7 +15,7 @@ public record NutrientDto(
 ) {
     public static NutrientDto of(Nutrient nutrient) {
         return new NutrientDto(
-                nutrient.getId(),
+                nutrient.getCalorie(),
                 nutrient.getCarbohydrate(),
                 nutrient.getSugars(),
                 nutrient.getDietaryFiber(),
