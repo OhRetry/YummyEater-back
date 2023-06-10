@@ -2,6 +2,7 @@ package com.YammyEater.demo.repository.food.queryDSL;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
+import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.domain.food.Food;
 import com.YammyEater.demo.domain.food.QCategory;
 import com.YammyEater.demo.domain.food.QFood;
@@ -10,9 +11,11 @@ import com.YammyEater.demo.domain.food.QFoodTag;
 import com.YammyEater.demo.domain.user.QUser;
 import com.YammyEater.demo.dto.food.FoodConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodSimpleResponse;
+import com.YammyEater.demo.exception.GeneralException;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.ArrayList;
 import java.util.List;
@@ -160,6 +163,62 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
         if(req.ingredients() != null) {
             for(String ingredient : req.ingredients()) {
                 query.where(food.ingredient.contains(ingredient));
+            }
+        }
+        if(req.nutrient() != null) {
+            for(String nutrient : req.nutrient()) {
+                String[] splitted = nutrient.split("_");
+                NumberPath targ = null;
+                //비교 대상을 선정
+                switch(splitted[0]){
+                    case "calorie" :
+                        targ = food.nutrient.calorie;
+                        break;
+                    case "carbohydrate":
+                        targ = food.nutrient.carbohydrate;
+                        break;
+                    case "sugars":
+                        targ = food.nutrient.sugars;
+                        break;
+                    case "dietaryFiber":
+                        targ = food.nutrient.dietaryFiber;
+                        break;
+                    case "protein":
+                        targ = food.nutrient.protein;
+                        break;
+                    case "fat":
+                        targ = food.nutrient.fat;
+                        break;
+                    case "saturatedFat":
+                        targ = food.nutrient.saturatedFat;
+                        break;
+                    case "unsaturatedFat":
+                        targ = food.nutrient.unsaturatedFat;
+                        break;
+                    case "natrium":
+                        targ = food.nutrient.natrium;
+                        break;
+                    default:
+                        throw new GeneralException(ErrorCode.BAD_REQUEST);
+                }
+                //기준점을 수치로 변환
+                Float compareTarg = null;
+                try {
+                    compareTarg = Float.valueOf(splitted[2]);
+                } catch (NumberFormatException e) {
+                    throw new GeneralException(ErrorCode.BAD_REQUEST);
+                }
+                //비교 지시를 해석
+                switch (splitted[1]) {
+                    case "greater":
+                        query.where(targ.gt(compareTarg));
+                        break;
+                    case "less":
+                        query.where(targ.lt(compareTarg));
+                        break;
+                    default:
+                        throw new GeneralException(ErrorCode.BAD_REQUEST);
+                }
             }
         }
         return query;
