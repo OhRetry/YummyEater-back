@@ -2,16 +2,20 @@ package com.YammyEater.demo.repository.food.queryDSL;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
+import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.domain.food.Food;
+import com.YammyEater.demo.domain.food.QCategory;
 import com.YammyEater.demo.domain.food.QFood;
+import com.YammyEater.demo.domain.food.QFoodCategory;
 import com.YammyEater.demo.domain.food.QFoodTag;
-import com.YammyEater.demo.domain.food.QTag;
 import com.YammyEater.demo.domain.user.QUser;
 import com.YammyEater.demo.dto.food.FoodConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodSimpleResponse;
+import com.YammyEater.demo.exception.GeneralException;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +40,9 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
     ) {
         QFood food = QFood.food;
         QUser user = QUser.user;
+        QFoodCategory foodCategory = QFoodCategory.foodCategory;
         QFoodTag foodTag = QFoodTag.foodTag;
-        QTag tag = QTag.tag;
+        QCategory category = QCategory.category;
 
         //먼저 조건을 만족하는 food의 id를 얻어옴
         JPQLQuery<Long> query = from(food).select(food.id);
@@ -55,9 +60,11 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
         JPQLQuery<Food> fetchQuery = from(food)
                 .join(food.user, user)
                 .fetchJoin()
-                .join(food.tags, foodTag)
+                .join(food.categories, foodCategory)
                 .fetchJoin()
-                .join(foodTag.tag, tag)
+                .join(foodCategory.category, category)
+                .fetchJoin()
+                .join(food.tags, foodTag)
                 .fetchJoin()
                 .where(food.id.in(ids));
         fetchQuery.fetch();
@@ -120,7 +127,7 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
         applyCondition(subQuery, req);
 
         JPQLQuery<Long> countQuery;
-        if(req.tags() != null) {
+        if(req.categories() != null || req.tags() != null) {
             QFood foodc = new QFood("foodc");
             countQuery = from(foodc).select(foodc.id.count()).where(foodc.id.in(subQuery));
         }
@@ -135,7 +142,7 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
     ){
         applyFoodCondition(query, req, QFood.food);
         applyUserCondition(query, req, QFood.food, QUser.user);
-        applyTagCondition(query, req, QFood.food, QFoodTag.foodTag, QTag.tag);
+        applyCategoryAndTagCondition(query, req, QFood.food, QFoodCategory.foodCategory, QCategory.category, QFoodTag.foodTag);
         return query;
     }
     private <T> JPQLQuery<T> applyFoodCondition(
@@ -152,6 +159,67 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
         }
         if(req.title() != null) {
             query.where(food.title.contains(req.title()));
+        }
+        if(req.ingredients() != null) {
+            for(String ingredient : req.ingredients()) {
+                query.where(food.ingredient.contains(ingredient));
+            }
+        }
+        if(req.nutrient() != null) {
+            for(String nutrient : req.nutrient()) {
+                String[] splitted = nutrient.split("_");
+                NumberPath targ = null;
+                //비교 대상을 선정
+                switch(splitted[0]){
+                    case "calorie" :
+                        targ = food.nutrient.calorie;
+                        break;
+                    case "carbohydrate":
+                        targ = food.nutrient.carbohydrate;
+                        break;
+                    case "sugars":
+                        targ = food.nutrient.sugars;
+                        break;
+                    case "dietaryFiber":
+                        targ = food.nutrient.dietaryFiber;
+                        break;
+                    case "protein":
+                        targ = food.nutrient.protein;
+                        break;
+                    case "fat":
+                        targ = food.nutrient.fat;
+                        break;
+                    case "saturatedFat":
+                        targ = food.nutrient.saturatedFat;
+                        break;
+                    case "unsaturatedFat":
+                        targ = food.nutrient.unsaturatedFat;
+                        break;
+                    case "natrium":
+                        targ = food.nutrient.natrium;
+                        break;
+                    default:
+                        throw new GeneralException(ErrorCode.BAD_REQUEST);
+                }
+                //기준점을 수치로 변환
+                Float compareTarg = null;
+                try {
+                    compareTarg = Float.valueOf(splitted[2]);
+                } catch (NumberFormatException e) {
+                    throw new GeneralException(ErrorCode.BAD_REQUEST);
+                }
+                //비교 지시를 해석
+                switch (splitted[1]) {
+                    case "greater":
+                        query.where(targ.gt(compareTarg));
+                        break;
+                    case "less":
+                        query.where(targ.lt(compareTarg));
+                        break;
+                    default:
+                        throw new GeneralException(ErrorCode.BAD_REQUEST);
+                }
+            }
         }
         return query;
     }
@@ -175,31 +243,40 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
         return query;
     }
 
-    private <T> JPQLQuery<T> applyTagCondition(
+    private <T> JPQLQuery<T> applyCategoryAndTagCondition(
             JPQLQuery<T> query,
             FoodConditionalRequest req,
             QFood food,
-            QFoodTag foodTag,
-            QTag tag
+            QFoodCategory foodCategory,
+            QCategory category,
+            QFoodTag foodTag
     ) {
-        //tag 조건 검색
-        //요청 tag를 모두 만족해야 함. 대략적으로 세가지 방법이 있음
-        //1. 조건의 태그를 가진 행만 남겨두고 group by로 개수를 세는 방법
-        //2. 계속 foodTag와 tag를 join해가며 조건의 태그와 같은지 검사, 남은 행을 구하는 방법 (검색 태그 개수 * 2만큼 join.)
-        //3. not exist + not exist문으로 바꿔서 처리.(검색 태그에 포함되지 않는 행이 존재하지 않는 것만 뽑아냄)
-        //1번이 가장 성능이 좋아 보여서 선택했다.
-        if(req.tags() != null) {
-            //1:N관계 이므로 where절이 들어가면 컬랙션 정합성이 유지되지 않으므로 fetch join은 하지 않음.
-            query.join(food.tags, foodTag);
-            query.join(foodTag.tag, tag);
-
-            //모든 tag를 갖는다는 것은 조건을 만족하는 엔티티 개수가 태그의 개수인 것.
-            query.where(tag.name.in(req.tags()));
-            Long tagCnt = Long.valueOf(req.tags().length);
-
-            query.groupBy(food.id).having(food.id.count().eq(tagCnt));
-
+        if(req.categories() == null && req.tags() == null) {
+            return query;
         }
+        //category, tag 조건 검색
+        //요청 category, tag를 모두 만족해야 함. 대략적으로 세가지 방법이 있음
+        //1. 조건의 category, tag를 가진 행만 남겨두고 group by로 개수를 세는 방법(모두 만족 = 개수가 category*tag인 것만 선택)
+        //2. 계속 category, tag를 join해가며 조건의 category, tag와 같은지 검사, 남은 행을 구하는 방법 (검색 category 개수 * 2 + 검색 tag 개수만큼 join 필요.)
+        //3. not exist + not exist문으로 바꿔서 처리.(검색 category, tag에 포함되지 않는 행이 존재하지 않는 것만 뽑아냄)
+        //1번이 가장 성능이 좋아 보여서 선택했다.
+        Long targetCnt = 1L;
+        if(req.categories() != null) {
+            //1:N관계 이므로 where절이 들어가면 컬랙션 정합성이 유지되지 않으므로 fetch join은 하지 않음.
+            query.join(food.categories, foodCategory);
+            query.join(foodCategory.category, category);
+
+            query.where(category.name.in(req.categories()));
+            targetCnt *= Long.valueOf(req.categories().length);
+        }
+        if(req.tags() != null) {
+            query.join(food.tags, foodTag);
+
+            query.where(foodTag.tag.in(req.tags()));
+            targetCnt *= Long.valueOf(req.tags().length);
+        }
+        //모든 category,tag를 갖는다는 것은 조건을 만족하는 행의 개수가 카테고리 개수 * 태그의 개수인 것.
+        query.groupBy(food.id).having(food.id.count().eq(targetCnt));
         return query;
     }
 }

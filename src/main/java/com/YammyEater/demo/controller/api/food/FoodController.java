@@ -12,10 +12,10 @@ import com.YammyEater.demo.dto.food.FoodReviewDto;
 import com.YammyEater.demo.dto.food.FoodReviewRegisterRequest;
 import com.YammyEater.demo.dto.food.FoodReviewRegisterResponse;
 import com.YammyEater.demo.dto.food.FoodSimpleResponse;
-import com.YammyEater.demo.dto.food.TagDto;
+import com.YammyEater.demo.dto.food.CategoryDto;
 import com.YammyEater.demo.service.food.FoodReviewService;
 import com.YammyEater.demo.service.food.FoodService;
-import com.YammyEater.demo.service.food.TagService;
+import com.YammyEater.demo.service.food.CategoryService;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,12 +35,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class FoodController {
 
     private final FoodService foodService;
-    private final TagService tagService;
+    private final CategoryService categoryService;
     private final FoodReviewService foodReviewService;
 
     //ex
-    //http://localhost:8080/api/food?type=RECIPE&tags=매운&sort=rating,desc&sort=id,desc&page=1size=5
-    //http://localhost:8080/api/food?type=RECIPE&tags=매운&tags=달콤한&sort=rating,desc&page=2size=5
+    //http://localhost:8080/api/food?type=RECIPE&categories=매운&sort=rating,desc&sort=id,desc&page=1size=5
+    //http://localhost:8080/api/food?type=RECIPE&categories=매운&categories=달콤한&sort=rating,desc&page=2size=5
     @GetMapping("api/food")
     public Page<FoodSimpleResponse> getFoodByCondition(FoodConditionalRequest foodConditionalRequest, Pageable pageable) {
         return foodService.findFoodByCondition(foodConditionalRequest, pageable);
@@ -85,10 +85,10 @@ public class FoodController {
         return ApiResponse.of(null);
     }
     //ex
-    //http://localhost:8080/api/tag
-    @GetMapping("/api/tag")
-    public ApiResponse<List<TagDto>> getAllTag() {
-        return ApiResponse.of(tagService.getAllTag(), ErrorCode.SUCCESS);
+    //http://localhost:8080/api/category
+    @GetMapping("/api/category")
+    public ApiResponse<List<CategoryDto>> getAllCategory() {
+        return ApiResponse.of(categoryService.getAllCategory(), ErrorCode.SUCCESS);
     }
 
     //ex

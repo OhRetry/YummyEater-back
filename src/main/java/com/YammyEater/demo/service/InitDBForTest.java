@@ -2,20 +2,22 @@ package com.YammyEater.demo.service;
 
 import com.YammyEater.demo.constant.food.FoodType;
 import com.YammyEater.demo.domain.food.Article;
+import com.YammyEater.demo.domain.food.Category;
 import com.YammyEater.demo.domain.food.Food;
+import com.YammyEater.demo.domain.food.FoodCategory;
 import com.YammyEater.demo.domain.food.FoodReview;
 import com.YammyEater.demo.domain.food.FoodReviewRatingCount;
 import com.YammyEater.demo.domain.food.FoodTag;
 import com.YammyEater.demo.domain.food.Nutrient;
-import com.YammyEater.demo.domain.food.Tag;
 import com.YammyEater.demo.domain.user.User;
 import com.YammyEater.demo.repository.food.ArticleRepository;
 import com.YammyEater.demo.repository.food.FoodRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRatingCountRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRepository;
+import com.YammyEater.demo.repository.food.FoodCategoryRepository;
 import com.YammyEater.demo.repository.food.FoodTagRepository;
 import com.YammyEater.demo.repository.food.NutrientRepository;
-import com.YammyEater.demo.repository.food.TagRepository;
+import com.YammyEater.demo.repository.food.CategoryRepository;
 import com.YammyEater.demo.repository.user.UserRepository;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,7 +26,6 @@ import java.util.Random;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,30 +35,37 @@ import org.springframework.transaction.annotation.Transactional;
 public class InitDBForTest {
 
     private final UserRepository userRepository;
-    private final TagRepository tagRepository;
+    private final CategoryRepository categoryRepository;
     private final FoodRepository foodRepository;
     private final FoodReviewRepository foodReviewRepository;
     private final FoodReviewRatingCountRepository foodReviewRatingCountRepository;
     private final NutrientRepository nutrientRepository;
+    private final FoodCategoryRepository foodCategoryRepository;
     private final FoodTagRepository foodTagRepository;
     private final ArticleRepository articleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final String[] tagNames = {"한식", "일식", "중식", "양식", "고기", "야채", "달콤한", "매운"};
-    private List<Tag> tags = new ArrayList<>();
+    private final String[] categoryNames = {
+            "밥", "죽/스프", "면", "떡", "빵", "디저트", "국", "찌개/전골", "샐러드", "반찬", "양념장",
+            "조림", "볶음", "구이", "오븐", "튀김", "부침", "찜",
+            "술안주", "간편식", "다이어트", "보양식", "채식", "명절",
+            "한식", "양식", "일식", "중식", "동남아식", "퓨전식",
+            "육류", "소고기", "돼지고기", "닭고기", "오리고기", "해산물", "어류", "패류/갑각류", "해조류", "알/유제품", "채소", "버섯", "콩/견과류"
+    };
+    private List<Category> categories = new ArrayList<>();
     private List<User> users = new ArrayList<>();
     @PostConstruct
     @Transactional
     public void init() {
-        initTag();
+        initCategory();
         initUser();
         initFood();
     }
-    private void initTag() {
-        for (String tagName : tagNames) {
-            Tag newTag = Tag.builder().name(tagName).build();
-            tagRepository.save(newTag);
-            tags.add(newTag);
+    private void initCategory() {
+        for (String categoryName : categoryNames) {
+            Category newCategory = Category.builder().name(categoryName).build();
+            categoryRepository.save(newCategory);
+            categories.add(newCategory);
         }
     }
 
@@ -84,9 +92,12 @@ public class InitDBForTest {
                     .calorie((float)Math.round(rand.nextFloat() * 10000) / 10)
                     .carbohydrate((float)Math.round(rand.nextFloat() * 500) / 10)
                     .sugars((float)Math.round(rand.nextFloat() * 200) / 10)
+                    .dietaryFiber((float)Math.round(rand.nextFloat() * 200) / 10)
                     .protein((float)Math.round(rand.nextFloat() * 200) / 10)
                     .fat((float)Math.round(rand.nextFloat() * 200) / 10)
+                    .saturatedFat((float)Math.round(rand.nextFloat() * 200) / 10)
                     .unsaturatedFat((float)Math.round(rand.nextFloat() * 100) / 10)
+                    .natrium((float)Math.round(rand.nextFloat() * 200) / 10)
                     .build();
             nutrientRepository.save(
                     food_nutrient
@@ -114,6 +125,8 @@ public class InitDBForTest {
                             .title("test" + i)
                             .rating(0)
                             .type(FoodType.RECIPE)
+                            .servings(rand.nextInt(4) + 1)
+                            .amount(rand.nextFloat() * 10000)
                             .ingredient("양파, 마늘")
                             .price(Long.valueOf(Math.round(rand.nextFloat() * 100000)))
                             .maker("osm")
@@ -166,15 +179,23 @@ public class InitDBForTest {
             foodRepository.save(newFood);
 
 
-            //태그
-            Set<Tag> food_tags = new HashSet<>();
+            //카테고리
+            Set<Category> food_categories = new HashSet<>();
             for (int k = 0; k < 3; k++) {
-                food_tags.add(tags.get(rand.nextInt(tags.size())));
+                food_categories.add(categories.get(rand.nextInt(categories.size())));
             }
 
-            for (Tag food_tag : food_tags) {
+            for (Category food_category : food_categories) {
+                foodCategoryRepository.save(
+                        new FoodCategory(newFood, food_category)
+                );
+            }
+
+            //태그
+            String[] testTags = {"테스트태그1", "테스트태그2", "테스트태그3"};
+            for(String tag:testTags) {
                 foodTagRepository.save(
-                        new FoodTag(newFood, food_tag)
+                        new FoodTag(newFood, tag)
                 );
             }
 

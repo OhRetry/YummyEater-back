@@ -8,10 +8,13 @@ public record FoodModifyRequest(
         String name,
         String title,
         FoodType type,
+        Integer servings,
+        Float amount,
         String ingredient,
         Long price,
         String maker,
         String imgUrl,
+        List<String> categories,
         List<String> tags,
         NutrientDto nutrient,
         @Length(max = 5000)

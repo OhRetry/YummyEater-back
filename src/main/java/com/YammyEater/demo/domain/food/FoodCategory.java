@@ -1,10 +1,9 @@
 package com.YammyEater.demo.domain.food;
 
-import com.YammyEater.demo.domain.BaseTimeEntity;
 import com.YammyEater.demo.domain.food.FoodCategory.FoodCategoryId;
 import java.io.Serializable;
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
@@ -17,29 +16,28 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Table(name="FOOD_TAG")
-@IdClass(FoodTag.FoodTagId.class)
-public class FoodTag extends BaseTimeEntity {
+@Setter
+@Table(name="FOOD_CATEGORY")
+@IdClass(FoodCategoryId.class)
+public class FoodCategory {
+
     @EqualsAndHashCode
-    public static class FoodTagId implements Serializable {
+    public static class FoodCategoryId implements Serializable {
         private Long food;
-        private String tag;
+        private Long category;
 
     }
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "FOOD_ID", referencedColumnName = "FOOD_ID")
-    Food food;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="FOOD_ID")
+    private Food food;
 
     @Id
-    @Column(name = "TAG")
-    String tag;
-
-    public FoodTag(Food food, String tag) {
-        this.food = food;
-        this.tag = tag;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="CATEGORY_ID")
+    private Category category;
 }

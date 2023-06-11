@@ -9,10 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FoodRepository extends JpaRepository<Food, Long>, FindFoodByCondition {
 
-    @EntityGraph(attributePaths = {"user", "tags.tag"})
+    @EntityGraph(attributePaths = {"user", "categories.category"})
     List<Food> findAll();
 
-    @EntityGraph(attributePaths = {"user", "tags.tag", "nutrient", "article", "foodReviewRatingCount"})
+    @EntityGraph(attributePaths = {"user", "categories.category", "nutrient", "article", "foodReviewRatingCount"})
     Optional<Food> findEagerById(Long id);
 
     Optional<Food> findById(Long id);

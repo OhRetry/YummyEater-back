@@ -32,6 +32,10 @@ public class Nutrient {
     private float sugars;
 
     @Setter
+    @Column(name="DIETARY_FIBER")
+    private float dietaryFiber;
+
+    @Setter
     @Column(name="PROTEIN")
     private float protein;
 
@@ -40,8 +44,16 @@ public class Nutrient {
     private float fat;
 
     @Setter
+    @Column(name="SATURATED_FAT")
+    private float saturatedFat;
+
+    @Setter
     @Column(name="UNSATURATED_FAT")
     private float unsaturatedFat;
+
+    @Setter
+    @Column(name="NATRIUM")
+    private float natrium;
 
     @Setter
     @OneToOne(mappedBy = "nutrient", fetch = FetchType.LAZY)
@@ -52,16 +64,22 @@ public class Nutrient {
             float calorie,
             float carbohydrate,
             float sugars,
+            float dietaryFiber,
             float protein,
             float fat,
-            float unsaturatedFat)
-    {
+            float saturatedFat,
+            float unsaturatedFat,
+            float natrium
+    ) {
         this.calorie = calorie;
         this.carbohydrate = carbohydrate;
         this.sugars = sugars;
+        this.dietaryFiber = dietaryFiber;
         this.protein = protein;
         this.fat = fat;
+        this.saturatedFat = saturatedFat;
         this.unsaturatedFat = unsaturatedFat;
+        this.natrium = natrium;
     }
 
     public Nutrient() {

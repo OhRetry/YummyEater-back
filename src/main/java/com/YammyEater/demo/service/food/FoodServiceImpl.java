@@ -4,9 +4,10 @@ import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.domain.food.Article;
 import com.YammyEater.demo.domain.food.Food;
 import com.YammyEater.demo.domain.food.FoodReviewRatingCount;
+import com.YammyEater.demo.domain.food.FoodCategory;
 import com.YammyEater.demo.domain.food.FoodTag;
 import com.YammyEater.demo.domain.food.Nutrient;
-import com.YammyEater.demo.domain.food.Tag;
+import com.YammyEater.demo.domain.food.Category;
 import com.YammyEater.demo.domain.user.User;
 import com.YammyEater.demo.dto.food.FoodConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodDetailResponse;
@@ -18,9 +19,10 @@ import com.YammyEater.demo.repository.food.ArticleRepository;
 import com.YammyEater.demo.repository.food.FoodRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRatingCountRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRepository;
+import com.YammyEater.demo.repository.food.FoodCategoryRepository;
 import com.YammyEater.demo.repository.food.FoodTagRepository;
 import com.YammyEater.demo.repository.food.NutrientRepository;
-import com.YammyEater.demo.repository.food.TagRepository;
+import com.YammyEater.demo.repository.food.CategoryRepository;
 import com.YammyEater.demo.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,8 +39,9 @@ public class FoodServiceImpl implements FoodService {
     private final ArticleRepository articleRepository;
     private final FoodReviewRepository foodReviewRepository;
     private final FoodReviewRatingCountRepository foodReviewRatingCountRepository;
+    private final FoodCategoryRepository foodCategoryRepository;
+    private final CategoryRepository categoryRepository;
     private final FoodTagRepository foodTagRepository;
-    private final TagRepository tagRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -85,6 +88,8 @@ public class FoodServiceImpl implements FoodService {
                 .title(foodRegisterRequest.title())
                 .rating(0)
                 .type(foodRegisterRequest.type())
+                .servings(foodRegisterRequest.servings())
+                .amount(foodRegisterRequest.amount())
                 .ingredient(foodRegisterRequest.ingredient())
                 .price(foodRegisterRequest.price())
                 .maker(foodRegisterRequest.maker())
@@ -96,16 +101,27 @@ public class FoodServiceImpl implements FoodService {
                 .build();
         foodRepository.save(food);
 
-        //태그 설정
-        for(String tagName : foodRegisterRequest.tags()) {
-            Tag tag = tagRepository.findByName(tagName);
-            //존재하지 않는 태그로 등록 요청한 경우
-            if(tag == null) {
-                throw new GeneralException(ErrorCode.BAD_REQUEST);
+        //카테고리 설정
+        if(foodRegisterRequest.categories() != null) {
+            for (String categoryName : foodRegisterRequest.categories()) {
+                Category category = categoryRepository.findByName(categoryName);
+                //존재하지 않는 카테고리로 등록 요청한 경우
+                if (category == null) {
+                    throw new GeneralException(ErrorCode.BAD_REQUEST);
+                }
+                foodCategoryRepository.save(
+                        new FoodCategory(food, category)
+                );
             }
-            foodTagRepository.save(
-                    new FoodTag(food, tag)
-            );
+        }
+
+        //태그 설정
+        if(foodRegisterRequest.tags() != null) {
+            for (String tagName : foodRegisterRequest.tags()) {
+                foodTagRepository.save(
+                        new FoodTag(food, tagName)
+                );
+            }
         }
 
         //등록한 음식의 id 반환
@@ -142,6 +158,9 @@ public class FoodServiceImpl implements FoodService {
         //리뷰 통계 삭제
         foodReviewRatingCountRepository.delete(food.getFoodReviewRatingCount());
 
+        //카테고리 정보 삭제
+        foodCategoryRepository.deleteAllByFood(food);
+
         //태그 정보 삭제
         foodTagRepository.deleteAllByFood(food);
 
@@ -170,6 +189,12 @@ public class FoodServiceImpl implements FoodService {
         if(foodModifyRequest.type() != null) {
             food.setType(foodModifyRequest.type());
         }
+        if(foodModifyRequest.servings() != null) {
+            food.setServings(foodModifyRequest.servings());
+        }
+        if(foodModifyRequest.amount() != null) {
+            food.setAmount(foodModifyRequest.amount());
+        }
         if(foodModifyRequest.ingredient() != null) {
             food.setIngredient(foodModifyRequest.ingredient());
         }
@@ -182,18 +207,26 @@ public class FoodServiceImpl implements FoodService {
         if(foodModifyRequest.imgUrl() != null) {
             food.setImgUrl(foodModifyRequest.imgUrl());
         }
-        if(foodModifyRequest.tags() != null) {
+        if(foodModifyRequest.categories() != null) {
             //태그 삭제
-            foodTagRepository.deleteAllByFood(food);
+            foodCategoryRepository.deleteAllByFood(food);
             //태그 설정
-            for(String tagName : foodModifyRequest.tags()) {
-                Tag tag = tagRepository.findByName(tagName);
+            for(String categoryName : foodModifyRequest.categories()) {
+                Category category = categoryRepository.findByName(categoryName);
                 //존재하지 않는 태그로 등록 요청한 경우
-                if(tag == null) {
+                if(category == null) {
                     throw new GeneralException(ErrorCode.BAD_REQUEST);
                 }
+                foodCategoryRepository.save(
+                        new FoodCategory(food, category)
+                );
+            }
+        }
+        if(foodModifyRequest.tags() != null) {
+            foodTagRepository.deleteAllByFood(food);
+            for(String tagName : foodModifyRequest.tags()) {
                 foodTagRepository.save(
-                        new FoodTag(food, tag)
+                        new FoodTag(food, tagName)
                 );
             }
         }
