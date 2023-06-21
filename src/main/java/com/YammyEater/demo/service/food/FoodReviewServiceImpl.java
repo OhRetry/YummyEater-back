@@ -59,6 +59,19 @@ public class FoodReviewServiceImpl implements FoodReviewService {
         FoodReviewRatingCount foodReviewRatingCount = food.getFoodReviewRatingCount();
         foodReviewRatingCount.increaseRatingCount(foodReviewRegisterRequest.rating());
 
+        float rating = 0;
+        int totalCnt = 0;
+        rating += foodReviewRatingCount.getRate1();
+        totalCnt += foodReviewRatingCount.getRate1();
+        rating += foodReviewRatingCount.getRate2() * 2;
+        totalCnt += foodReviewRatingCount.getRate2();
+        rating += foodReviewRatingCount.getRate3() * 3;
+        totalCnt += foodReviewRatingCount.getRate3();
+        rating += foodReviewRatingCount.getRate4() * 4;
+        totalCnt += foodReviewRatingCount.getRate4();
+        rating += foodReviewRatingCount.getRate5() * 5;
+        totalCnt += foodReviewRatingCount.getRate5();
+        food.setRating(rating / totalCnt);
 
         return foodReview.getId();
     }
@@ -80,7 +93,23 @@ public class FoodReviewServiceImpl implements FoodReviewService {
 
         //리뷰 통계 정보 수정
         Food food = foodReview.getFood();
-        food.getFoodReviewRatingCount().decreaseRatingCount(3);
+
+        FoodReviewRatingCount foodReviewRatingCount = food.getFoodReviewRatingCount();
+        foodReviewRatingCount.decreaseRatingCount(3);
+
+        float rating = 0;
+        int totalCnt = 0;
+        rating += foodReviewRatingCount.getRate1();
+        totalCnt += foodReviewRatingCount.getRate1();
+        rating += foodReviewRatingCount.getRate2() * 2;
+        totalCnt += foodReviewRatingCount.getRate2();
+        rating += foodReviewRatingCount.getRate3() * 3;
+        totalCnt += foodReviewRatingCount.getRate3();
+        rating += foodReviewRatingCount.getRate4() * 4;
+        totalCnt += foodReviewRatingCount.getRate4();
+        rating += foodReviewRatingCount.getRate5() * 5;
+        totalCnt += foodReviewRatingCount.getRate5();
+        food.setRating(rating / totalCnt);
 
         foodReviewRepository.deleteById(reviewId);
 
