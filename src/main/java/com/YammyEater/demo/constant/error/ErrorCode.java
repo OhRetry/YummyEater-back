@@ -19,7 +19,10 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR("C20000", HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR"),
 
     //User Login
-    WRONG_EMAIL_OR_PASSWORD("UL00000", HttpStatus.OK, "이메일이나 비밀번호를 다시 확인해주세요.");
+    WRONG_EMAIL_OR_PASSWORD("UL00000", HttpStatus.OK, "이메일이나 비밀번호를 다시 확인해주세요."),
+
+    //User Modify
+    UM_WRONG_PASSWORD("UM00000", HttpStatus.OK, "비밀번호가 틀립니다.");
 
     private final String code;
     private final HttpStatus httpStatus;

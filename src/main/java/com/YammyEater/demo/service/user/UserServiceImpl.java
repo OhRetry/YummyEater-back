@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorCode.BAD_REQUEST));
         //비밀번호가 다름
         if(!passwordEncoder.matches(userInfoChangeRequest.password(), user.getPassword())){
-            throw new GeneralException(ErrorCode.FORBIDDEN);
+            throw new GeneralException(ErrorCode.UM_WRONG_PASSWORD);
         }
         if(userInfoChangeRequest.newUserName() != null) {
             user.setUsername(userInfoChangeRequest.newUserName());
