@@ -122,7 +122,6 @@ public class Food extends BaseTimeEntity {
 
     @Builder
     public Food(
-            String name,
             String title,
             float rating,
             FoodType type,
@@ -137,7 +136,6 @@ public class Food extends BaseTimeEntity {
             Article article,
             FoodReviewRatingCount foodReviewRatingCount
     ) {
-        this.name = name;
         this.title = title;
         this.rating = rating;
         this.type = type;

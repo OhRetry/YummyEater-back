@@ -154,9 +154,6 @@ public class FindFoodByConditionImpl extends QuerydslRepositorySupport implement
         if(req.type() != null) {
             query.where(food.type.eq(req.type()));
         }
-        if(req.name() != null) {
-            query.where(food.name.contains(req.name()));
-        }
         if(req.title() != null) {
             query.where(food.title.contains(req.title()));
         }

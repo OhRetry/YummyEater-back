@@ -84,7 +84,6 @@ public class FoodServiceImpl implements FoodService {
 
         //음식 생성
         Food food = Food.builder()
-                .name(foodRegisterRequest.name())
                 .title(foodRegisterRequest.title())
                 .rating(0)
                 .type(foodRegisterRequest.type())
@@ -180,9 +179,6 @@ public class FoodServiceImpl implements FoodService {
             throw new GeneralException(ErrorCode.FORBIDDEN);
         }
 
-        if(foodModifyRequest.name() != null) {
-            food.setName(foodModifyRequest.name());
-        }
         if(foodModifyRequest.title() != null) {
             food.setTitle(foodModifyRequest.title());
         }

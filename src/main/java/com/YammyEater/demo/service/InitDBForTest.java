@@ -121,7 +121,6 @@ public class InitDBForTest {
             //음식
             Food newFood = foodRepository.save(
                     Food.builder()
-                            .name("test" + i)
                             .title("test" + i)
                             .rating(0)
                             .type(FoodType.RECIPE)

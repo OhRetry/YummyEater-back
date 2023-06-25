@@ -8,7 +8,6 @@ import java.util.List;
 public record FoodSimpleResponse(
         Long id,
         FoodType type,
-        String name,
         String title,
 
         Long userId,
@@ -31,7 +30,6 @@ public record FoodSimpleResponse(
         return new FoodSimpleResponse(
                 food.getId(),
                 food.getType(),
-                food.getName(),
                 food.getTitle(),
                 food.getUser().getId(),
                 food.getUser().getUsername(),

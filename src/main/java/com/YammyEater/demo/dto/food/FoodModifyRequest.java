@@ -5,7 +5,6 @@ import java.util.List;
 import org.hibernate.validator.constraints.Length;
 
 public record FoodModifyRequest(
-        String name,
         String title,
         FoodType type,
         Integer servings,

@@ -8,7 +8,6 @@ import java.util.List;
 public record FoodDetailResponse(
         Long id,
         FoodType type,
-        String name,
         String title,
 
         Long userId,
@@ -40,7 +39,6 @@ public record FoodDetailResponse(
         return new FoodDetailResponse(
                 food.getId(),
                 food.getType(),
-                food.getName(),
                 food.getTitle(),
                 food.getUser().getId(),
                 food.getUser().getUsername(),
