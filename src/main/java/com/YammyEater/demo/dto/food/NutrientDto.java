@@ -3,15 +3,15 @@ package com.YammyEater.demo.dto.food;
 import com.YammyEater.demo.domain.food.Nutrient;
 
 public record NutrientDto(
-        float calorie,
-        float carbohydrate,
-        float sugars,
-        float dietaryFiber,
-        float protein,
-        float fat,
-        float saturatedFat,
-        float unsaturatedFat,
-        float natrium
+        Float calorie,
+        Float carbohydrate,
+        Float sugars,
+        Float dietaryFiber,
+        Float protein,
+        Float fat,
+        Float saturatedFat,
+        Float unsaturatedFat,
+        Float natrium
 ) {
     public static NutrientDto of(Nutrient nutrient) {
         return new NutrientDto(
