@@ -117,7 +117,7 @@ public class FoodReviewServiceImpl implements FoodReviewService {
         Food food = foodReview.getFood();
 
         FoodReviewRatingCount foodReviewRatingCount = food.getFoodReviewRatingCount();
-        foodReviewRatingCount.decreaseRatingCount(3);
+        foodReviewRatingCount.decreaseRatingCount(foodReview.getRating());
         recalculateRating(food, foodReviewRatingCount);
 
         foodReviewRepository.deleteById(reviewId);
