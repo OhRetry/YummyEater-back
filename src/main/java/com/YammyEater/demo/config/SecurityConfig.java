@@ -42,6 +42,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/food/**/review")
                 .authenticated();
+        //리뷰 수정
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.PATCH, "/api/food/review/**")
+                .authenticated();
         //리뷰 삭제
         http.authorizeRequests()
                 .antMatchers(HttpMethod.DELETE, "/api/food/review/**")

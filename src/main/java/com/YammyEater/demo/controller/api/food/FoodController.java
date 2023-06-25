@@ -9,6 +9,8 @@ import com.YammyEater.demo.dto.food.FoodRegisterRequest;
 import com.YammyEater.demo.dto.food.FoodRegisterResponse;
 import com.YammyEater.demo.dto.food.FoodReviewConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodReviewDto;
+import com.YammyEater.demo.dto.food.FoodReviewModifyRequest;
+import com.YammyEater.demo.dto.food.FoodReviewModifyResponse;
 import com.YammyEater.demo.dto.food.FoodReviewRegisterRequest;
 import com.YammyEater.demo.dto.food.FoodReviewRegisterResponse;
 import com.YammyEater.demo.dto.food.FoodSimpleResponse;
@@ -119,6 +121,16 @@ public class FoodController {
     ) {
         Long reviewId = foodReviewService.registerFoodReview(userId, foodId, foodReviewRegisterRequest);
         return ApiResponse.of(new FoodReviewRegisterResponse(reviewId));
+    }
+
+    @PatchMapping("api/food/review/{reviewId}")
+    public ApiResponse<FoodReviewModifyResponse> modifyFoodReview(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable(name = "reviewId") Long reviewId,
+            @RequestBody @Valid FoodReviewModifyRequest foodReviewModifyRequest
+    ) {
+        foodReviewService.modifyFoodReview(userId, reviewId, foodReviewModifyRequest);
+        return ApiResponse.of(new FoodReviewModifyResponse(reviewId));
     }
 
     @DeleteMapping("api/food/review/{reviewId}")

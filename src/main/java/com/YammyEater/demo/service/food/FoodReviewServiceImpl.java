@@ -7,6 +7,7 @@ import com.YammyEater.demo.domain.food.FoodReviewRatingCount;
 import com.YammyEater.demo.domain.user.User;
 import com.YammyEater.demo.dto.food.FoodReviewConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodReviewDto;
+import com.YammyEater.demo.dto.food.FoodReviewModifyRequest;
 import com.YammyEater.demo.dto.food.FoodReviewRegisterRequest;
 import com.YammyEater.demo.exception.GeneralException;
 import com.YammyEater.demo.repository.food.FoodRepository;
@@ -58,22 +59,43 @@ public class FoodReviewServiceImpl implements FoodReviewService {
 
         FoodReviewRatingCount foodReviewRatingCount = food.getFoodReviewRatingCount();
         foodReviewRatingCount.increaseRatingCount(foodReviewRegisterRequest.rating());
-
-        float rating = 0;
-        int totalCnt = 0;
-        rating += foodReviewRatingCount.getRate1();
-        totalCnt += foodReviewRatingCount.getRate1();
-        rating += foodReviewRatingCount.getRate2() * 2;
-        totalCnt += foodReviewRatingCount.getRate2();
-        rating += foodReviewRatingCount.getRate3() * 3;
-        totalCnt += foodReviewRatingCount.getRate3();
-        rating += foodReviewRatingCount.getRate4() * 4;
-        totalCnt += foodReviewRatingCount.getRate4();
-        rating += foodReviewRatingCount.getRate5() * 5;
-        totalCnt += foodReviewRatingCount.getRate5();
-        food.setRating(rating / totalCnt);
+        recalculateRating(food, foodReviewRatingCount);
 
         return foodReview.getId();
+    }
+
+    @Override
+    @Transactional
+    public void modifyFoodReview(Long userId, Long reviewId, FoodReviewModifyRequest foodReviewModifyRequest) {
+        //존재하지 않는 리뷰의 경우 BAD REQUEST
+        FoodReview foodReview = foodReviewRepository
+                .findById(reviewId)
+                .orElseThrow(() -> new GeneralException(ErrorCode.BAD_REQUEST));
+
+        User user = userRepository.getById(userId);
+
+        //작성자가 아닐 경우 FORBIDDEN
+        if(user != foodReview.getUser()) {
+            throw new GeneralException(ErrorCode.FORBIDDEN);
+        }
+
+        //내용 수정
+        if(foodReviewModifyRequest.content() != null) {
+            foodReview.setContent(foodReviewModifyRequest.content());
+        }
+
+        //별점 수정
+        if(foodReviewModifyRequest.rating() != null) {
+            //리뷰 통계 정보 수정
+            Food food = foodReview.getFood();
+            FoodReviewRatingCount foodReviewRatingCount = food.getFoodReviewRatingCount();
+            foodReviewRatingCount.decreaseRatingCount(foodReview.getRating());
+            foodReviewRatingCount.increaseRatingCount(foodReviewModifyRequest.rating());
+            //리뷰 별점 수정
+            foodReview.setRating(foodReviewModifyRequest.rating());
+            //평균 별점 재계산
+            recalculateRating(food, foodReviewRatingCount);
+        }
     }
 
     @Override
@@ -96,7 +118,13 @@ public class FoodReviewServiceImpl implements FoodReviewService {
 
         FoodReviewRatingCount foodReviewRatingCount = food.getFoodReviewRatingCount();
         foodReviewRatingCount.decreaseRatingCount(3);
+        recalculateRating(food, foodReviewRatingCount);
 
+        foodReviewRepository.deleteById(reviewId);
+
+    }
+
+    private void recalculateRating(Food food, FoodReviewRatingCount foodReviewRatingCount) {
         float rating = 0;
         int totalCnt = 0;
         rating += foodReviewRatingCount.getRate1();
@@ -109,9 +137,11 @@ public class FoodReviewServiceImpl implements FoodReviewService {
         totalCnt += foodReviewRatingCount.getRate4();
         rating += foodReviewRatingCount.getRate5() * 5;
         totalCnt += foodReviewRatingCount.getRate5();
-        food.setRating(rating / totalCnt);
-
-        foodReviewRepository.deleteById(reviewId);
-
+        if(totalCnt == 0) {
+            food.setRating(0);
+        }
+        else {
+            food.setRating(rating / totalCnt);
+        }
     }
 }
