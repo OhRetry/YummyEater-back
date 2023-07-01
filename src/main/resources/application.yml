@@ -6,8 +6,10 @@ spring:
       dev:
         - db-dev
         - db-h2
+        - upload-local
     include:
       - db
+      - upload
 
   mail:
     host: smtp.gmail.com
@@ -39,9 +41,3 @@ jwt:
   secret_key: ${JWT_SECRET_KEY}
   access_token_expire_minute: 30
   refresh_token_expire_minute: 20160
-
-upload:
-  local:
-    resource_host: ${RESOURCE_HOST}
-    upload_root: ${UPLOAD_ROOT}
-    urlPath: /upload/

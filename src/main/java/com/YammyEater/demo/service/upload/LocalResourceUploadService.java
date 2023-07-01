@@ -8,7 +8,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -17,17 +19,14 @@ import org.springframework.web.multipart.MultipartFile;
 /*
 서버의 파일 시스템에 업로드하는 서비스
  */
-@Service
+@RequiredArgsConstructor
 public class LocalResourceUploadService implements ResourceUploadService {
 
-    @Value("${upload.local.upload_root}")
-    private String UPLOAD_ROOT;
+    private final String UPLOAD_ROOT;
 
-    @Value("${upload.local.resource_host}")
-    private String RESOURCE_HOST;
+    private final String RESOURCE_HOST;
 
-    @Value("${upload.local.urlPath}")
-    private String URL_PATH;
+    private final String URL_PATH;
 
     @Override
     public String uploadResource(MultipartFile resource) {
