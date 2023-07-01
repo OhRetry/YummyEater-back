@@ -1,11 +1,15 @@
 spring:
   profiles:
     active:
-      - dev
+      - dev2
     group:
       dev:
         - db-dev
         - db-h2
+        - upload-local
+      dev2:
+        - db-dev
+        - db-mysql
         - upload-local
     include:
       - db
