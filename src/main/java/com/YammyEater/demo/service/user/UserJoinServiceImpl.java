@@ -2,6 +2,7 @@ package com.YammyEater.demo.service.user;
 
 import com.YammyEater.demo.Util.RandomUtil;
 import com.YammyEater.demo.constant.error.ErrorCode;
+import com.YammyEater.demo.constant.user.OAuthProvider;
 import com.YammyEater.demo.domain.user.EmailVerification;
 import com.YammyEater.demo.domain.user.User;
 import com.YammyEater.demo.exception.GeneralException;
@@ -113,6 +114,7 @@ public class UserJoinServiceImpl implements UserJoinService {
                         .email(email)
                         .username(username)
                         .password(passwordEncoder.encode(password))
+                        .oauthProviderName(OAuthProvider.NOT_USE.getName())
                         .build()
         );
 

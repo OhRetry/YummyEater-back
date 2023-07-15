@@ -31,11 +31,16 @@ public class User extends BaseTimeEntity {
     @Column(name = "USERNAME")
     private String username;
 
+    @Setter
+    @Column(name = "OAUTH_PROVIDER_NAME")
+    private String oauthProviderName;
+
     @Builder
-    public User(String email, String password, String username) {
+    public User(String email, String password, String username, String oauthProviderName) {
         this.email = email;
         this.password = password;
         this.username = username;
+        this.oauthProviderName = oauthProviderName;
     }
 
     public User() {
