@@ -50,10 +50,11 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public FoodDetailResponse findFoodById(Long id) {
-        FoodDetailResponse res = foodRepository.findEagerById(id).map(FoodDetailResponse::of).orElse(null);
-        return res;
+        Food food = foodRepository.findEagerById(id).orElseThrow(() -> new GeneralException(ErrorCode.BAD_REQUEST));
+        food.increaseViews();
+        return FoodDetailResponse.of(food);
     }
 
     @Override
