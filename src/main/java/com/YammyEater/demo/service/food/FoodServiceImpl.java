@@ -94,6 +94,7 @@ public class FoodServiceImpl implements FoodService {
                 .price(foodRegisterRequest.price())
                 .maker(foodRegisterRequest.maker())
                 .imgUrl(foodRegisterRequest.imgUrl())
+                .views(0)
                 .user(user)
                 .nutrient(nutrient)
                 .article(article)

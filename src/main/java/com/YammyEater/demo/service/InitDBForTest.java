@@ -130,6 +130,7 @@ public class InitDBForTest {
                             .price(Long.valueOf(Math.round(rand.nextFloat() * 100000)))
                             .maker("osm")
                             .imgUrl("test.jpg")
+                            .views(0)
                             .user(food_user)
                             .nutrient(food_nutrient)
                             .article(food_article)
