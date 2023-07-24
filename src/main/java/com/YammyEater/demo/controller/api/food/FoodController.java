@@ -62,9 +62,6 @@ public class FoodController {
     @GetMapping("api/food/{id}")
     public ApiResponse<FoodDetailResponse> getFoodById(@PathVariable(name = "id") Long id) {
         FoodDetailResponse res = foodService.findFoodById(id);
-        if(res == null) {
-            return ApiResponse.of(null, ErrorCode.BAD_REQUEST);
-        }
         return ApiResponse.of(res);
     }
 

@@ -87,6 +87,10 @@ public class Food extends BaseTimeEntity {
     @Column(name = "IMG_URL")
     private String imgUrl;
 
+    @Setter
+    @Column(name = "VIEWS")
+    private Integer views;
+
     //연결된 카테고리들
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
     private Set<FoodCategory> categories = new HashSet<>();
@@ -131,6 +135,7 @@ public class Food extends BaseTimeEntity {
             Long price,
             String maker,
             String imgUrl,
+            Integer views,
             User user,
             Nutrient nutrient,
             Article article,
@@ -145,10 +150,10 @@ public class Food extends BaseTimeEntity {
         this.price = price;
         this.maker = maker;
         this.imgUrl = imgUrl;
+        this.views = views;
         this.user = user;
         this.nutrient = nutrient;
         this.article = article;
         this.foodReviewRatingCount = foodReviewRatingCount;
-
     }
 }

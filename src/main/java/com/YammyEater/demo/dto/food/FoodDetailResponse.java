@@ -32,6 +32,8 @@ public record FoodDetailResponse(
 
         FoodReviewRatingCountDto foodReviewRatingCount,
 
+        Integer views,
+
         String createdAt,
         String lastModifiedAt
 ) {
@@ -54,6 +56,7 @@ public record FoodDetailResponse(
                 NutrientDto.of(food.getNutrient()),
                 food.getArticle().getContent(),
                 FoodReviewRatingCountDto.of(food.getFoodReviewRatingCount()),
+                food.getViews(),
                 food.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME),
                 food.getLastModifiedAt().format(DateTimeFormatter.ISO_DATE_TIME)
         );
