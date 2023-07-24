@@ -156,8 +156,4 @@ public class Food extends BaseTimeEntity {
         this.article = article;
         this.foodReviewRatingCount = foodReviewRatingCount;
     }
-
-    public void increaseViews() {
-        this.views += 1;
-    }
 }

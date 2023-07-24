@@ -52,8 +52,8 @@ public class FoodServiceImpl implements FoodService {
     @Override
     @Transactional
     public FoodDetailResponse findFoodById(Long id) {
+        foodRepository.increaseViews(id);
         Food food = foodRepository.findEagerById(id).orElseThrow(() -> new GeneralException(ErrorCode.BAD_REQUEST));
-        food.increaseViews();
         return FoodDetailResponse.of(food);
     }
 
