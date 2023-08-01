@@ -3,16 +3,7 @@ package com.YammyEater.demo.controller.api.user;
 import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.dto.ApiResponse;
 import com.YammyEater.demo.dto.DuplicateCheckResponse;
-import com.YammyEater.demo.dto.user.EmailVerifyingRequest;
-import com.YammyEater.demo.dto.user.EmailVerifyingResponse;
-import com.YammyEater.demo.dto.user.RefreshAccessTokenRequest;
-import com.YammyEater.demo.dto.user.RefreshAccessTokenResponse;
-import com.YammyEater.demo.dto.user.SendEmailVerifyingRequest;
-import com.YammyEater.demo.dto.user.SignInRequest;
-import com.YammyEater.demo.dto.user.SignInResponse;
-import com.YammyEater.demo.dto.user.UserDto;
-import com.YammyEater.demo.dto.user.UserInfoChangeRequest;
-import com.YammyEater.demo.dto.user.UserJoinRequest;
+import com.YammyEater.demo.dto.user.*;
 import com.YammyEater.demo.exception.GeneralException;
 import com.YammyEater.demo.service.user.JwtTokenProvider;
 import com.YammyEater.demo.service.user.UserJoinService;
@@ -20,6 +11,8 @@ import com.YammyEater.demo.service.user.UserService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -106,5 +99,13 @@ public class UserController {
     ) {
         userService.serUserInfo(userId, userInfoChangeRequest);
         return ApiResponse.of(null);
+    }
+
+    @PostMapping("/api/user/oauth/join")
+    public ApiResponse<SignInResponse> joinOAuth(@RequestBody @Valid OAuthUserJoinRequest oAuthUserJoinRequest) {
+        Long userId = userJoinService.joinByOAuth(oAuthUserJoinRequest);
+        String accessToken = jwtTokenProvider.createAccessToken(userId);
+        String refreshToken = jwtTokenProvider.createRefreshToken(userId, accessToken);
+        return ApiResponse.of(new SignInResponse(accessToken, refreshToken));
     }
 }

@@ -35,6 +35,16 @@ spring:
       max-request-size:
         10MB
 
+  security:
+    oauth2:
+      client:
+        front_success_redirect_url: ${OAUTH_FRONT_SUCCESS_REDIRECT_URL}
+        front_join_redirect_url: ${OAUTH_FRONT_JOIN_REDIRECT_URL}
+        registration:
+          google:
+            client-id: ${OAUTH_GOOGLE_ID}
+            client-secret: ${OAUTH_GOOGLE_SECRET}
+            scope: profile, email
 user:
   join:
     verification_code_expire_second: 300
@@ -45,3 +55,4 @@ jwt:
   secret_key: ${JWT_SECRET_KEY}
   access_token_expire_minute: 30
   refresh_token_expire_minute: 20160
+  oauth_join_token_expire_minute: 120
