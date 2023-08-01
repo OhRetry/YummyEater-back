@@ -5,12 +5,17 @@ import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.constant.user.OAuthProvider;
 import com.YammyEater.demo.domain.user.EmailVerification;
 import com.YammyEater.demo.domain.user.User;
+import com.YammyEater.demo.dto.user.OAuthUserJoinRequest;
+import com.YammyEater.demo.dto.user.oauth.OAuthJoinTokenSubject;
 import com.YammyEater.demo.exception.GeneralException;
+import com.YammyEater.demo.exception.jwt.JwtExpiredException;
+import com.YammyEater.demo.exception.jwt.JwtInvalidException;
 import com.YammyEater.demo.repository.user.EmailVerificationRepository;
 import com.YammyEater.demo.repository.user.UserRepository;
 import com.YammyEater.demo.service.mail.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +45,7 @@ public class UserJoinServiceImpl implements UserJoinService {
     private final RandomUtil randomUtil;
     private final PasswordEncoder passwordEncoder;
 
+    private final JwtTokenProvider jwtTokenProvider;
 
 
     //인증코드를 이메일로 보냄
@@ -123,4 +129,39 @@ public class UserJoinServiceImpl implements UserJoinService {
 
     }
 
+    @Override
+    public Long joinByOAuth(OAuthUserJoinRequest oAuthUserJoinRequest) {
+        OAuthJoinTokenSubject oAuthJoinTokenSubject;
+        try {
+             oAuthJoinTokenSubject = jwtTokenProvider.validateOAuthJoinTokenAndGetSubject(
+                    oAuthUserJoinRequest.joinToken());
+        }
+        catch (JwtExpiredException jwtExpiredException) {
+            throw new GeneralException(ErrorCode.UOJ_JOINTOKEN_EXPIRED);
+        }
+        catch (JwtInvalidException jwtInvalidException) {
+            throw new GeneralException(ErrorCode.BAD_REQUEST);
+        }
+
+        User user = null;
+        try {
+            user = userRepository.save(
+                    User.builder()
+                            .email(oAuthJoinTokenSubject.getEmail())
+                            .username(oAuthUserJoinRequest.username())
+                            .password(null)
+                            .oauthProviderName(oAuthJoinTokenSubject.getOAuthProvider().getName())
+                            .build()
+            );
+        }
+        // 데이터 제약조건 위반. 중복된 닉네임은 사용자에게 알려줌.
+        // 이 외의 잘못된 요청 등은 전부 BAD REQUEST
+        catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            if(userRepository.existsByUsername(oAuthUserJoinRequest.username())) {
+                throw new GeneralException(ErrorCode.UOJ_DUPLICATE_USERNAME);
+            }
+            throw new GeneralException(ErrorCode.BAD_REQUEST);
+        }
+        return user.getId();
+    }
 }
