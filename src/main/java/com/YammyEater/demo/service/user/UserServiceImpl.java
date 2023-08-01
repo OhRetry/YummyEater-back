@@ -50,6 +50,9 @@ public class UserServiceImpl implements UserService {
         if(user == null) {
             return null;
         }
+        if(user.getOauthProviderName() != null) {
+            return null;
+        }
         if(passwordEncoder.matches(password, user.getPassword()) == false) {
             return null;
         }
