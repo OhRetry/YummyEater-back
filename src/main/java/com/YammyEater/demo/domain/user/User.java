@@ -20,7 +20,7 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     @Setter
-    @Column(name = "EMAIL")
+    @Column(name = "EMAIL", unique = true)
     private String email;
 
     @Setter
@@ -28,7 +28,7 @@ public class User extends BaseTimeEntity {
     private String password;
 
     @Setter
-    @Column(name = "USERNAME")
+    @Column(name = "USERNAME", unique = true)
     private String username;
 
     @Setter
