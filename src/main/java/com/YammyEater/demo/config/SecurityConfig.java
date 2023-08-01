@@ -2,6 +2,8 @@ package com.YammyEater.demo.config;
 
 import com.YammyEater.demo.security.JwtAuthenticationFilter;
 import com.YammyEater.demo.service.user.JwtTokenProvider;
+import com.YammyEater.demo.service.user.oauth.GoogleOAuthUserServiceImpl;
+import com.YammyEater.demo.service.user.oauth.OAuthSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final GoogleOAuthUserServiceImpl googleOAuthUserService;
+    private final OAuthSuccessHandler oAuthSuccessHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -68,6 +72,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterAfter(jwtAuthenticationFilter, CorsFilter.class);
 
+        http.oauth2Login().userInfoEndpoint().userService(googleOAuthUserService).and().successHandler(oAuthSuccessHandler);
     }
-
 }
