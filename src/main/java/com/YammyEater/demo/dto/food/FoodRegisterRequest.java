@@ -19,6 +19,7 @@ public record FoodRegisterRequest(
         List<String> tags,
         NutrientDto nutrient,
         @NotBlank @Length(max = 5000)
-        String content
+        String content,
+        List<String> resourceURLList
 ) {
 }

@@ -3,6 +3,7 @@ package com.YammyEater.demo.service.food;
 import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.domain.food.Article;
 import com.YammyEater.demo.domain.food.Food;
+import com.YammyEater.demo.domain.food.FoodResource;
 import com.YammyEater.demo.domain.food.FoodReviewRatingCount;
 import com.YammyEater.demo.domain.food.FoodCategory;
 import com.YammyEater.demo.domain.food.FoodTag;
@@ -17,18 +18,25 @@ import com.YammyEater.demo.dto.food.FoodSimpleResponse;
 import com.YammyEater.demo.exception.GeneralException;
 import com.YammyEater.demo.repository.food.ArticleRepository;
 import com.YammyEater.demo.repository.food.FoodRepository;
+import com.YammyEater.demo.repository.food.FoodResourceRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRatingCountRepository;
 import com.YammyEater.demo.repository.food.FoodReviewRepository;
 import com.YammyEater.demo.repository.food.FoodCategoryRepository;
 import com.YammyEater.demo.repository.food.FoodTagRepository;
 import com.YammyEater.demo.repository.food.NutrientRepository;
 import com.YammyEater.demo.repository.food.CategoryRepository;
+import com.YammyEater.demo.repository.upload.TempResourceRepository;
 import com.YammyEater.demo.repository.user.UserRepository;
+import com.YammyEater.demo.service.upload.ResourceUploadService;
+import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +51,9 @@ public class FoodServiceImpl implements FoodService {
     private final CategoryRepository categoryRepository;
     private final FoodTagRepository foodTagRepository;
     private final UserRepository userRepository;
+    private final FoodResourceRepository foodResourceRepository;
+    private final TempResourceRepository tempResourceRepository;
+    private final ResourceUploadService resourceUploadService;
 
     @Override
     public Page<FoodSimpleResponse> findFoodByCondition(FoodConditionalRequest foodConditionalRequest, Pageable pageable) {
@@ -123,6 +134,24 @@ public class FoodServiceImpl implements FoodService {
             }
         }
 
+        //업로드한 자원의 정보를 FoodResource로 저장
+        if(foodRegisterRequest.resourceURLList() != null) {
+            for (String resourceURL : foodRegisterRequest.resourceURLList()) {
+                String resourceKey = resourceUploadService.getResourceKeyFromURL(resourceURL);
+                //자원 주소가 잘못되면 키가 null
+                //임시 업로드 자원 목록에 존재해야함
+                if(resourceKey == null || !tempResourceRepository.existsById(resourceKey)) {
+                    continue;
+                }
+                //FoodResource에 추가
+                foodResourceRepository.save(
+                        new FoodResource(resourceKey, food)
+                );
+                //임시 업로드 자원 목록에서 삭제
+                tempResourceRepository.deleteById(resourceKey);
+            }
+        }
+
         //등록한 음식의 id 반환
         return food.getId();
     }
@@ -162,6 +191,14 @@ public class FoodServiceImpl implements FoodService {
 
         //태그 정보 삭제
         foodTagRepository.deleteAllByFood(food);
+
+        //연결된 자원 삭제
+        for(FoodResource foodResource : food.getFoodResources()) {
+            //파일을 삭제
+            resourceUploadService.deleteResourceByKey(foodResource.getKey());
+        }
+        //FoodResource 삭제
+        foodResourceRepository.deleteAllByFood(food);
 
         //food 삭제
         foodRepository.delete(food);
@@ -232,6 +269,34 @@ public class FoodServiceImpl implements FoodService {
         if(foodModifyRequest.content() != null) {
             food.getArticle().setContent(foodModifyRequest.content());
         }
+        if(foodModifyRequest.resourceURLList() != null) {
+            //기존에 등록되어 있던 FoodResource
+            Set<FoodResource> originalFoodResources = new HashSet<>(food.getFoodResources());
+            //새로 요청된 FoodResource
+            Set<FoodResource> newFoodResources = new HashSet<>();
+            for(String resourceURL : foodModifyRequest.resourceURLList()) {
+                String resourceKey = resourceUploadService.getResourceKeyFromURL(resourceURL);
+                if(resourceKey == null) {
+                    continue;
+                }
+                newFoodResources.add(
+                        new FoodResource(resourceKey, food)
+                );
+            }
+            //삭제할 자원
+            for(FoodResource foodResource : Sets.difference(originalFoodResources, newFoodResources)) {
+                foodResourceRepository.delete(foodResource);
+                resourceUploadService.deleteResourceByKey(foodResource.getKey());
+            }
+            //추가할 자원
+            for(FoodResource foodResource : Sets.difference(newFoodResources, originalFoodResources)) {
+                //TempResource에서 FoodResource로 옮김
+                //임시 업로드 자원 목록에 존재해야 추가 대상
+                if(tempResourceRepository.existsById(foodResource.getKey())) {
+                    foodResourceRepository.save(foodResource);
+                    tempResourceRepository.deleteById(foodResource.getKey());
+                }
+            }
+        }
     }
-
 }

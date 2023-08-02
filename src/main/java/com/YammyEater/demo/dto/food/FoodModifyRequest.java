@@ -17,6 +17,7 @@ public record FoodModifyRequest(
         List<String> tags,
         NutrientDto nutrient,
         @Length(max = 5000)
-        String content
+        String content,
+        List<String> resourceURLList
 ) {
 }
