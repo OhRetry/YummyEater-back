@@ -1,12 +1,15 @@
 package com.YammyEater.demo.service.upload;
 
 import com.YammyEater.demo.constant.error.ErrorCode;
+import com.YammyEater.demo.domain.upload.TempResource;
 import com.YammyEater.demo.exception.upload.ResourceDownloadException;
 import com.YammyEater.demo.exception.upload.ResourceUploadException;
+import com.YammyEater.demo.repository.upload.TempResourceRepository;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +31,8 @@ public class LocalResourceUploadService implements ResourceUploadService {
 
     private final String URL_PATH;
 
+    private final TempResourceRepository tempResourceRepository;
+
     @Override
     public String uploadResource(MultipartFile resource) {
         String filename = createFileName(resource.getOriginalFilename());
@@ -38,6 +43,7 @@ public class LocalResourceUploadService implements ResourceUploadService {
         catch (IOException e) {
             throw new ResourceUploadException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
+        tempResourceRepository.save(new TempResource(filename, LocalDateTime.now()));
         return getWebPath(filename);
     }
 
