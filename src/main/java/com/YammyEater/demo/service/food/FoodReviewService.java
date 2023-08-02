@@ -1,18 +1,16 @@
 package com.YammyEater.demo.service.food;
 
+import com.YammyEater.demo.dto.food.FoodReviewConditionalRequest;
 import com.YammyEater.demo.dto.food.FoodReviewDto;
-import com.YammyEater.demo.repository.food.FoodReviewRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.YammyEater.demo.dto.food.FoodReviewModifyRequest;
+import com.YammyEater.demo.dto.food.FoodReviewRegisterRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
-@Service
-public class FoodReviewService {
-    @Autowired
-    FoodReviewRepository foodReviewRepository;
+public interface FoodReviewService {
+    Page<FoodReviewDto> getFoodReviewPageByCondition(Long foodId, FoodReviewConditionalRequest foodReviewConditionalRequest, Pageable pageable);
+    Long registerFoodReview(Long userId, Long foodId, FoodReviewRegisterRequest foodReviewRegisterRequest);
 
-    public Page<FoodReviewDto> getFoodReviewPageByFoodId(Long foodId, Pageable pageable) {
-        return foodReviewRepository.findByFoodId(foodId, pageable).map(FoodReviewDto::of);
-    }
+    void modifyFoodReview(Long userId, Long reviewId, FoodReviewModifyRequest foodReviewModifyRequest);
+    void deleteFoodReview(Long userId, Long reviewId);
 }

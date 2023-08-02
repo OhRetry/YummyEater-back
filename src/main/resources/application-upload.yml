@@ -1,0 +1,9 @@
+#local resource upload server 설정
+spring:
+  config:
+    activate:
+      on-profile: 'upload-local'
+  upload:
+    resource_host: ${RESOURCE_HOST}
+    upload_root: ${UPLOAD_ROOT}
+    urlPath: /upload/

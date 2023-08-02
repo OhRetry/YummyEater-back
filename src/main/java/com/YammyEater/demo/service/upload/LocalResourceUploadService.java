@@ -1,33 +1,37 @@
 package com.YammyEater.demo.service.upload;
 
 import com.YammyEater.demo.constant.error.ErrorCode;
+import com.YammyEater.demo.domain.upload.TempResource;
 import com.YammyEater.demo.exception.upload.ResourceDownloadException;
 import com.YammyEater.demo.exception.upload.ResourceUploadException;
+import com.YammyEater.demo.repository.upload.TempResourceRepository;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 /*
-서버의 파일 시스템에 업로드하는 서비스
+로컬서버의 파일 시스템에 업로드하는 서비스
  */
-@Service
+@RequiredArgsConstructor
 public class LocalResourceUploadService implements ResourceUploadService {
 
-    @Value("${upload.local.upload_root}")
-    private String UPLOAD_ROOT;
+    private final String UPLOAD_ROOT;
 
-    @Value("${upload.local.resource_host}")
-    private String RESOURCE_HOST;
+    private final String RESOURCE_HOST;
 
-    @Value("${upload.local.urlPath}")
-    private String URL_PATH;
+    private final String URL_PATH;
+
+    private final TempResourceRepository tempResourceRepository;
 
     @Override
     public String uploadResource(MultipartFile resource) {
@@ -39,20 +43,23 @@ public class LocalResourceUploadService implements ResourceUploadService {
         catch (IOException e) {
             throw new ResourceUploadException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
+        tempResourceRepository.save(new TempResource(filename, LocalDateTime.now()));
         return getWebPath(filename);
     }
 
     @Override
-    public Resource getResource(String resourcePath) {
-        File file = new File(getRealPath(resourcePath));
-        Resource resource;
-        try {
-            resource = new InputStreamResource(new FileInputStream(file));
+    public String getResourceKeyFromURL(String resourceURL) {
+        int begin = resourceURL.lastIndexOf(URL_PATH);
+        if(begin == -1) {
+            return null;
         }
-        catch (FileNotFoundException e) {
-            throw new ResourceDownloadException(ErrorCode.NOT_FOUND);
-        }
-        return resource;
+        return resourceURL.substring(begin + URL_PATH.length());
+    }
+
+    @Override
+    public void deleteResourceByKey(String key) {
+        File deleteFile = new File(getRealPath(key));
+        deleteFile.delete();
     }
 
     private String getRealPath(String resourcePath) {

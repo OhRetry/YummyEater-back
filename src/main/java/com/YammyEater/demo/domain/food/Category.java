@@ -13,22 +13,22 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Table(name = "TAG")
-public class Tag extends BaseTimeEntity {
+@Table(name = "CATEGORY")
+public class Category extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="TAG_ID")
+    @Column(name="CATEGORY_ID")
     private Long id;
 
     @Setter
-    @Column(name="NAME")
+    @Column(name="NAME", unique = true)
     private String name;
 
     @Builder
-    public Tag(String name) {
+    public Category(String name) {
         this.name = name;
     }
 
-    public Tag() {
+    public Category() {
     }
 }

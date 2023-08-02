@@ -1,4 +1,4 @@
-package com.YammyEater.demo.controller.exceptionHandler;
+package com.YammyEater.demo.controller.api.exceptionHandler;
 
 import com.YammyEater.demo.constant.error.ErrorCode;
 import com.YammyEater.demo.dto.ApiResponse;

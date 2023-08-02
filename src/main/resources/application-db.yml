@@ -1,0 +1,54 @@
+#db 기본 설정
+spring:
+  jpa:
+    defer-datasource-initializtion: true
+    properties:
+        default_batch_fetch_size: 100
+    open-in-view: false
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+---
+#db dev 설정. debug 관련 sql표시 설정, hibernate ddl 설정
+spring:
+  config:
+    activate:
+      on-profile: 'db-dev'
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        use_sql_comments: true
+        format_sql: true
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+---
+# db-h2 설정
+spring:
+  config:
+    activate:
+      on-profile: 'db-h2'
+  jpa:
+    database: h2
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:yummy
+---
+# db-mysql 설정
+spring:
+  config:
+    activate:
+      on-profile: 'db-mysql'
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}

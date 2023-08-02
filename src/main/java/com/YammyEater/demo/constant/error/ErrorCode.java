@@ -19,7 +19,17 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR("C20000", HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR"),
 
     //User Login
-    WRONG_EMAIL_OR_PASSWORD("UL00000", HttpStatus.OK, "이메일이나 비밀번호를 다시 확인해주세요.");
+    WRONG_EMAIL_OR_PASSWORD("UL00000", HttpStatus.OK, "이메일이나 비밀번호를 다시 확인해주세요."),
+
+    //User OAuth Login
+    UOL_EMAIL_IS_NOT_OAUTH_ACCOUNT("UOL00000", HttpStatus.OK, "해당 이메일은 소셜 로그인 계정이 아닙니다."),
+
+    //User Modify
+    UM_WRONG_PASSWORD("UM00000", HttpStatus.OK, "비밀번호가 틀립니다."),
+
+    //User OAuth Join
+    UOJ_JOINTOKEN_EXPIRED("UOJ00000", HttpStatus.OK, "만료된 회원가입 토큰입니다."),
+    UOJ_DUPLICATE_USERNAME("UOJ00001", HttpStatus.OK, "중복된 닉네임입니다.");
 
     private final String code;
     private final HttpStatus httpStatus;

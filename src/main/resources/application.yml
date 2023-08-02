@@ -1,21 +1,19 @@
 spring:
-  jpa:
-    database: h2
-    defer-datasource-initializtion: true
-    #show-sql: true
-    hibernate:
-      ddl-auto: create-drop
-    properties:
-      hibernate:
-        #use_sql_comments: true
-        #format_sql: true
-        default_batch_fetch_size: 100
-    open-in-view: false
-  h2:
-    console:
-      enabled: true
-  datasource:
-    url: jdbc:h2:mem:yammy
+  profiles:
+    active:
+      - dev2
+    group:
+      dev:
+        - db-dev
+        - db-h2
+        - upload-local
+      dev2:
+        - db-dev
+        - db-mysql
+        - upload-local
+    include:
+      - db
+      - upload
 
   mail:
     host: smtp.gmail.com
@@ -30,11 +28,6 @@ spring:
           starttls:
             enable: true
 
-  redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
-
-
   servlet:
     multipart:
       max-file-size:
@@ -42,13 +35,16 @@ spring:
       max-request-size:
         10MB
 
-  level:
-    org:
-      hibernate:
-        type:
-          descriptor:
-            sql: trace
-
+  security:
+    oauth2:
+      client:
+        front_success_redirect_url: ${OAUTH_FRONT_SUCCESS_REDIRECT_URL}
+        front_join_redirect_url: ${OAUTH_FRONT_JOIN_REDIRECT_URL}
+        registration:
+          google:
+            client-id: ${OAUTH_GOOGLE_ID}
+            client-secret: ${OAUTH_GOOGLE_SECRET}
+            scope: profile, email
 user:
   join:
     verification_code_expire_second: 300
@@ -58,9 +54,5 @@ user:
 jwt:
   secret_key: ${JWT_SECRET_KEY}
   access_token_expire_minute: 30
-
-upload:
-  local:
-    resource_host: ${RESOURCE_HOST}
-    upload_root: ${UPLOAD_ROOT}
-    urlPath: upload/
+  refresh_token_expire_minute: 20160
+  oauth_join_token_expire_minute: 120

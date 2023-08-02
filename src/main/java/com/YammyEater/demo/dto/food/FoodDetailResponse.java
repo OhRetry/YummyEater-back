@@ -8,7 +8,6 @@ import java.util.List;
 public record FoodDetailResponse(
         Long id,
         FoodType type,
-        String name,
         String title,
 
         Long userId,
@@ -18,17 +17,22 @@ public record FoodDetailResponse(
 
         float rating,
 
+        Integer servings,
+        Float amount,
+
         String ingredient,
         Long price,
         String maker,
 
+        List<String> categories,
         List<String> tags,
-
         NutrientDto nutrient,
 
         String content,
 
         FoodReviewRatingCountDto foodReviewRatingCount,
+
+        Integer views,
 
         String createdAt,
         String lastModifiedAt
@@ -37,19 +41,22 @@ public record FoodDetailResponse(
         return new FoodDetailResponse(
                 food.getId(),
                 food.getType(),
-                food.getName(),
                 food.getTitle(),
                 food.getUser().getId(),
                 food.getUser().getUsername(),
                 food.getImgUrl(),
                 food.getRating(),
+                food.getServings(),
+                food.getAmount(),
                 food.getIngredient(),
                 food.getPrice(),
                 food.getMaker(),
-                food.getTags().stream().map(x -> x.getTag().getName()).toList(),
+                food.getCategories().stream().map(x -> x.getCategory().getName()).toList(),
+                food.getTags().stream().map(x -> x.getTag()).toList(),
                 NutrientDto.of(food.getNutrient()),
                 food.getArticle().getContent(),
                 FoodReviewRatingCountDto.of(food.getFoodReviewRatingCount()),
+                food.getViews(),
                 food.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME),
                 food.getLastModifiedAt().format(DateTimeFormatter.ISO_DATE_TIME)
         );

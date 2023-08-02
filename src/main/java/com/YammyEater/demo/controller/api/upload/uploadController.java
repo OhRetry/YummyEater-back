@@ -1,4 +1,4 @@
-package com.YammyEater.demo.controller.upload;
+package com.YammyEater.demo.controller.api.upload;
 
 import com.YammyEater.demo.Util.FileNameUtil;
 import com.YammyEater.demo.dto.ApiResponse;
@@ -24,18 +24,9 @@ public class uploadController {
     private final FileNameUtil fileNameUtil;
 
     @PostMapping("/upload")
-    public ApiResponse<UploadResponse> uploadResource(@RequestParam MultipartFile resource) throws IOException {
+    public ApiResponse<UploadResponse> uploadResource(@RequestParam MultipartFile resource) {
         String resourceURL = resourceUploadService.uploadResource(resource);
         return ApiResponse.of(new UploadResponse(resourceURL));
-    }
-
-    @GetMapping("/upload/{resourcePath}")
-    public ResponseEntity<Resource> getUploadedResource(@PathVariable(name = "resourcePath") String resourcePath) {
-        Resource resource = resourceUploadService.getResource(resourcePath);
-        MediaType resourceType = fileNameUtil.getMediaTypeByFilename(resourcePath);
-        return ResponseEntity.ok()
-                .contentType(resourceType)
-                .body(resource);
     }
 
 }

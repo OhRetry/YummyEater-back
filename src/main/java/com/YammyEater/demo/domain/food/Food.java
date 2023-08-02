@@ -4,7 +4,9 @@ import com.YammyEater.demo.constant.food.FoodType;
 import com.YammyEater.demo.domain.BaseTimeEntity;
 import com.YammyEater.demo.domain.user.User;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -55,6 +57,16 @@ public class Food extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private FoodType type;
 
+    //몇인분인지 정보
+    @Setter
+    @Column(name = "SERVINGS")
+    private Integer servings;
+
+    //중량 정보(완제품 등을 위함)
+    @Setter
+    @Column(name = "AMOUNT")
+    private Float amount;
+
     //음식 재료 설명(닭, 배추 등)
     @Setter
     @Column(name = "INGREDIENT")
@@ -75,9 +87,20 @@ public class Food extends BaseTimeEntity {
     @Column(name = "IMG_URL")
     private String imgUrl;
 
+    @Setter
+    @Column(name = "VIEWS")
+    private Integer views;
+
+    //연결된 카테고리들
+    @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
+    private Set<FoodCategory> categories = new HashSet<>();
+
     //연결된 태그들
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
-    private List<FoodTag> tags = new ArrayList<>();
+    private Set<FoodTag> tags = new HashSet<>();
+
+    @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
+    private List<FoodResource> foodResources = new ArrayList<>();
 
     //작성자
     @Setter
@@ -106,31 +129,34 @@ public class Food extends BaseTimeEntity {
 
     @Builder
     public Food(
-            String name,
             String title,
             float rating,
             FoodType type,
+            Integer servings,
+            Float amount,
             String ingredient,
             Long price,
             String maker,
             String imgUrl,
+            Integer views,
             User user,
             Nutrient nutrient,
             Article article,
             FoodReviewRatingCount foodReviewRatingCount
     ) {
-        this.name = name;
         this.title = title;
         this.rating = rating;
         this.type = type;
+        this.servings = servings;
+        this.amount = amount;
         this.ingredient = ingredient;
         this.price = price;
         this.maker = maker;
         this.imgUrl = imgUrl;
+        this.views = views;
         this.user = user;
         this.nutrient = nutrient;
         this.article = article;
         this.foodReviewRatingCount = foodReviewRatingCount;
-
     }
 }

@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         //검증 후 userId 추출, 없으면 인증 종료
-        Long userId = jwtTokenProvider.validateAndGetUserId(accessToken);
+        Long userId = jwtTokenProvider.validateAccessTokenAndGetUserId(accessToken);
         if(userId == null) {
             return;
         }

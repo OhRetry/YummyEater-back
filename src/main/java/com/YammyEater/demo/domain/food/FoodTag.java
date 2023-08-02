@@ -1,8 +1,10 @@
 package com.YammyEater.demo.domain.food;
 
+import com.YammyEater.demo.domain.BaseTimeEntity;
+import com.YammyEater.demo.domain.food.FoodCategory.FoodCategoryId;
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
@@ -15,28 +17,29 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Table(name="FOOD_TAG")
 @IdClass(FoodTag.FoodTagId.class)
-public class FoodTag {
-
+public class FoodTag extends BaseTimeEntity {
     @EqualsAndHashCode
     public static class FoodTagId implements Serializable {
         private Long food;
-        private Long tag;
+        private String tag;
 
     }
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="FOOD_ID")
-    private Food food;
+    @ManyToOne
+    @JoinColumn(name = "FOOD_ID", referencedColumnName = "FOOD_ID")
+    Food food;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="TAG_ID")
-    private Tag tag;
+    @Column(name = "TAG")
+    String tag;
+
+    public FoodTag(Food food, String tag) {
+        this.food = food;
+        this.tag = tag;
+    }
 }
