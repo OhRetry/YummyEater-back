@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 /*
-서버의 파일 시스템에 업로드하는 서비스
+로컬서버의 파일 시스템에 업로드하는 서비스
  */
 @RequiredArgsConstructor
 public class LocalResourceUploadService implements ResourceUploadService {
@@ -45,6 +45,21 @@ public class LocalResourceUploadService implements ResourceUploadService {
         }
         tempResourceRepository.save(new TempResource(filename, LocalDateTime.now()));
         return getWebPath(filename);
+    }
+
+    @Override
+    public String getResourceKeyFromURL(String resourceURL) {
+        int begin = resourceURL.lastIndexOf(URL_PATH);
+        if(begin == -1) {
+            return null;
+        }
+        return resourceURL.substring(begin + URL_PATH.length());
+    }
+
+    @Override
+    public void deleteResourceByKey(String key) {
+        File deleteFile = new File(getRealPath(key));
+        deleteFile.delete();
     }
 
     private String getRealPath(String resourcePath) {
