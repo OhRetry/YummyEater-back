@@ -20,7 +20,7 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     @Setter
-    @Column(name = "EMAIL")
+    @Column(name = "EMAIL", unique = true)
     private String email;
 
     @Setter
@@ -28,14 +28,19 @@ public class User extends BaseTimeEntity {
     private String password;
 
     @Setter
-    @Column(name = "USERNAME")
+    @Column(name = "USERNAME", unique = true)
     private String username;
 
+    @Setter
+    @Column(name = "OAUTH_PROVIDER_NAME")
+    private String oauthProviderName;
+
     @Builder
-    public User(String email, String password, String username) {
+    public User(String email, String password, String username, String oauthProviderName) {
         this.email = email;
         this.password = password;
         this.username = username;
+        this.oauthProviderName = oauthProviderName;
     }
 
     public User() {

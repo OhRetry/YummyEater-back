@@ -1,10 +1,17 @@
 package com.YammyEater.demo.service.user;
 
 import com.YammyEater.demo.constant.error.ErrorCode;
+import com.YammyEater.demo.constant.user.OAuthProvider;
 import com.YammyEater.demo.domain.user.RefreshTokenInfo;
+import com.YammyEater.demo.dto.user.oauth.OAuthJoinTokenSubject;
 import com.YammyEater.demo.exception.GeneralException;
+import com.YammyEater.demo.exception.jwt.JwtExpiredException;
+import com.YammyEater.demo.exception.jwt.JwtInvalidException;
 import com.YammyEater.demo.repository.user.RefreshTokenInfoRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Calendar;
@@ -28,6 +35,11 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
 
     @Value("${jwt.refresh_token_expire_minute}")
     private int refreshTokenExpireMinute;
+
+    @Value("${jwt.oauth_join_token_expire_minute}")
+    private int oauthJoinTokenExpireMinute;
+
+
 
     private final RefreshTokenInfoRepository refreshTokenInfoRepository;
 
@@ -125,6 +137,41 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
 
         return userId;
     }
+
+    @Override
+    public String createOAuthJoinToken(OAuthJoinTokenSubject oAuthJoinTokenSubject) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String subject = null;
+        try {
+            subject = objectMapper.writeValueAsString(oAuthJoinTokenSubject);
+        } catch (JsonProcessingException e) {
+            throw new GeneralException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return createToken(subject, oauthJoinTokenExpireMinute);
+    }
+
+    @Override
+    public OAuthJoinTokenSubject validateOAuthJoinTokenAndGetSubject(String joinToken) {
+        Claims claims;
+        try {
+            claims = Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(joinToken)
+                    .getBody();
+        } catch (ExpiredJwtException expiredJwtException) {
+            throw new JwtExpiredException();
+        } catch (JwtException jwtException) {
+            throw new JwtInvalidException();
+        }
+        String subject = claims.getSubject();
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(subject, OAuthJoinTokenSubject.class);
+        } catch (JsonProcessingException e) {
+            throw new GeneralException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     private String createToken(String subject, int expireTime) {
         Date now = new Date();

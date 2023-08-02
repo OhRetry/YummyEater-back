@@ -1,6 +1,7 @@
 package com.YammyEater.demo.service;
 
 import com.YammyEater.demo.constant.food.FoodType;
+import com.YammyEater.demo.constant.user.OAuthProvider;
 import com.YammyEater.demo.domain.food.Article;
 import com.YammyEater.demo.domain.food.Category;
 import com.YammyEater.demo.domain.food.Food;
@@ -75,6 +76,7 @@ public class InitDBForTest {
                     .email("email" + i + "@test.com")
                     .password(passwordEncoder.encode("1111"))
                     .username("user" + i)
+                    .oauthProviderName(OAuthProvider.NOT_USE.getName())
                     .build();
             userRepository.save(newUser);
             users.add(newUser);
@@ -130,6 +132,7 @@ public class InitDBForTest {
                             .price(Long.valueOf(Math.round(rand.nextFloat() * 100000)))
                             .maker("osm")
                             .imgUrl("test.jpg")
+                            .views(0)
                             .user(food_user)
                             .nutrient(food_nutrient)
                             .article(food_article)

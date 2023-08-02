@@ -61,10 +61,11 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public FoodDetailResponse findFoodById(Long id) {
-        FoodDetailResponse res = foodRepository.findEagerById(id).map(FoodDetailResponse::of).orElse(null);
-        return res;
+        foodRepository.increaseViews(id);
+        Food food = foodRepository.findEagerById(id).orElseThrow(() -> new GeneralException(ErrorCode.BAD_REQUEST));
+        return FoodDetailResponse.of(food);
     }
 
     @Override
@@ -104,6 +105,7 @@ public class FoodServiceImpl implements FoodService {
                 .price(foodRegisterRequest.price())
                 .maker(foodRegisterRequest.maker())
                 .imgUrl(foodRegisterRequest.imgUrl())
+                .views(0)
                 .user(user)
                 .nutrient(nutrient)
                 .article(article)
