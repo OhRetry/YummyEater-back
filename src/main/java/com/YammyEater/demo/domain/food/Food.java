@@ -95,6 +95,9 @@ public class Food extends BaseTimeEntity {
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
     private Set<FoodTag> tags = new HashSet<>();
 
+    @OneToMany(mappedBy = "food", fetch = FetchType.LAZY)
+    private List<FoodResource> foodResources = new ArrayList<>();
+
     //작성자
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
