@@ -17,7 +17,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
     properties:
       hibernate:
         use_sql_comments: true
@@ -28,6 +28,15 @@ spring:
         type:
           descriptor:
             sql: trace
+---
+# db prod 설정
+spring:
+  config:
+    activate:
+      on-profile: 'db-prod'
+  jpa:
+    hibernate:
+      ddl-auto: validate
 ---
 # db-h2 설정
 spring:

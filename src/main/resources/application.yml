@@ -1,7 +1,5 @@
 spring:
   profiles:
-    active:
-      - dev2
     group:
       dev:
         - db-dev
@@ -9,6 +7,10 @@ spring:
         - upload-local
       dev2:
         - db-dev
+        - db-mysql
+        - upload-local
+      prod:
+        - db-prod
         - db-mysql
         - upload-local
     include:
