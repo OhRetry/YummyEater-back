@@ -55,13 +55,14 @@ public class InitDBForTest {
     };
     private List<Category> categories = new ArrayList<>();
     private List<User> users = new ArrayList<>();
-    @PostConstruct
+
     @Transactional
     public void init() {
         initCategory();
         initUser();
         initFood();
     }
+
     private void initCategory() {
         for (String categoryName : categoryNames) {
             Category newCategory = Category.builder().name(categoryName).build();
@@ -85,7 +86,7 @@ public class InitDBForTest {
 
     private void initFood() {
         Random rand = new Random();
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 10; i++) {
             //유저
             User food_user = users.get(rand.nextInt(users.size()));
 
@@ -144,7 +145,7 @@ public class InitDBForTest {
             Long cnts[] = {0L, 0L, 0L, 0L, 0L};
             String reviewString[] = {"최악", "맛없어요", "그냥 그래요", "나름 괜찮아요", "최고에요"};
             for(int k=1;k<=5;k++) {
-                int cnt = rand.nextInt(20);
+                int cnt = rand.nextInt(10);
 
                 for(int j=0;j<cnt;j++) {
                     foodReviewRepository.save(
