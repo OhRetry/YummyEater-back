@@ -21,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.YammyEater.demo.domain.food.QFood.food;
+
 @Service
 @RequiredArgsConstructor
 public class FoodReviewServiceImpl implements FoodReviewService {
@@ -48,6 +50,7 @@ public class FoodReviewServiceImpl implements FoodReviewService {
 
         User user = userRepository.getById(userId);
 
+
         FoodReview foodReview = FoodReview.builder()
                 .user(user)
                 .food(food)
@@ -55,11 +58,12 @@ public class FoodReviewServiceImpl implements FoodReviewService {
                 .rating(foodReviewRegisterRequest.rating())
                 .build();
 
-        foodReviewRepository.save(foodReview);
+        FoodRatingChanger foodRatingChanger = new FoodRatingChanger(food, foodRepository, foodReviewRatingCountRepository);
+        foodRatingChanger.increaseRating(foodReview.getRating());
+        foodRatingChanger.execute();
 
-        FoodReviewRatingCount foodReviewRatingCount = food.getFoodReviewRatingCount();
-        foodReviewRatingCount.increaseRatingCount(foodReviewRegisterRequest.rating());
-        recalculateRating(food, foodReviewRatingCount);
+        //FoodReview를 등록하면 FK가 참조하는 Food에 s lock이 걸리므로 먼저 별점 통게를 업데이트
+        foodReviewRepository.save(foodReview);
 
         return foodReview.getId();
     }
@@ -88,13 +92,14 @@ public class FoodReviewServiceImpl implements FoodReviewService {
         if(foodReviewModifyRequest.rating() != null) {
             //리뷰 통계 정보 수정
             Food food = foodReview.getFood();
-            FoodReviewRatingCount foodReviewRatingCount = food.getFoodReviewRatingCount();
-            foodReviewRatingCount.decreaseRatingCount(foodReview.getRating());
-            foodReviewRatingCount.increaseRatingCount(foodReviewModifyRequest.rating());
+            FoodRatingChanger foodRatingChanger = new FoodRatingChanger(food, foodRepository, foodReviewRatingCountRepository);
+            foodRatingChanger.decreaseRating(foodReview.getRating());
+            foodRatingChanger.increaseRating(foodReviewModifyRequest.rating());
+            foodRatingChanger.execute();
+
             //리뷰 별점 수정
+            foodReview = foodReviewRepository.getById(reviewId);
             foodReview.setRating(foodReviewModifyRequest.rating());
-            //평균 별점 재계산
-            recalculateRating(food, foodReviewRatingCount);
         }
     }
 
@@ -115,33 +120,11 @@ public class FoodReviewServiceImpl implements FoodReviewService {
 
         //리뷰 통계 정보 수정
         Food food = foodReview.getFood();
-
-        FoodReviewRatingCount foodReviewRatingCount = food.getFoodReviewRatingCount();
-        foodReviewRatingCount.decreaseRatingCount(foodReview.getRating());
-        recalculateRating(food, foodReviewRatingCount);
+        FoodRatingChanger foodRatingChanger = new FoodRatingChanger(food, foodRepository, foodReviewRatingCountRepository);
+        foodRatingChanger.decreaseRating(foodReview.getRating());
+        foodRatingChanger.execute();
 
         foodReviewRepository.deleteById(reviewId);
 
-    }
-
-    private void recalculateRating(Food food, FoodReviewRatingCount foodReviewRatingCount) {
-        float rating = 0;
-        int totalCnt = 0;
-        rating += foodReviewRatingCount.getRate1();
-        totalCnt += foodReviewRatingCount.getRate1();
-        rating += foodReviewRatingCount.getRate2() * 2;
-        totalCnt += foodReviewRatingCount.getRate2();
-        rating += foodReviewRatingCount.getRate3() * 3;
-        totalCnt += foodReviewRatingCount.getRate3();
-        rating += foodReviewRatingCount.getRate4() * 4;
-        totalCnt += foodReviewRatingCount.getRate4();
-        rating += foodReviewRatingCount.getRate5() * 5;
-        totalCnt += foodReviewRatingCount.getRate5();
-        if(totalCnt == 0) {
-            food.setRating(0);
-        }
-        else {
-            food.setRating(rating / totalCnt);
-        }
     }
 }
