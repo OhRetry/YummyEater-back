@@ -108,4 +108,11 @@ public class UserController {
         String refreshToken = jwtTokenProvider.createRefreshToken(userId, accessToken);
         return ApiResponse.of(new SignInResponse(accessToken, refreshToken));
     }
+
+    @PostMapping("/api/user/resetPassword")
+    public ApiResponse<Object> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+        String newPassword = userService.resetPassword(resetPasswordRequest.email());
+        userService.sendResetPasswordEmail(resetPasswordRequest.email(), newPassword);
+        return ApiResponse.of(null);
+    }
 }

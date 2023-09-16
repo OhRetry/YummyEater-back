@@ -25,4 +25,7 @@ public interface UserService {
 
     UserDto getUserInfo(Long userId);
     void serUserInfo(Long userId, UserInfoChangeRequest userInfoChangeRequest);
+
+    String resetPassword(String email);
+    void sendResetPasswordEmail(String email, String newPassword);
 }

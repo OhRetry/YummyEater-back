@@ -1,11 +1,14 @@
 package com.YammyEater.demo.service.user;
 
+import com.YammyEater.demo.Util.RandomUtil;
 import com.YammyEater.demo.constant.error.ErrorCode;
+import com.YammyEater.demo.constant.user.OAuthProvider;
 import com.YammyEater.demo.domain.user.User;
 import com.YammyEater.demo.dto.user.UserDto;
 import com.YammyEater.demo.dto.user.UserInfoChangeRequest;
 import com.YammyEater.demo.exception.GeneralException;
 import com.YammyEater.demo.repository.user.UserRepository;
+import com.YammyEater.demo.service.mail.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,10 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RandomUtil randomUtil;
+    private final MailService mailService;
+
+    private final String resetPasswordEmailTitle = "YummyEater 비밀번호가 재설정되었습니다.";
 
     //어떤 이메일이 회원가입 되었는지 검사
     @Override
@@ -91,5 +98,26 @@ public class UserServiceImpl implements UserService {
         if(userInfoChangeRequest.newPassword() != null) {
             user.setPassword(passwordEncoder.encode(userInfoChangeRequest.newPassword()));
         }
+    }
+
+    @Override
+    @Transactional
+    public String resetPassword(String email) {
+        User user = userRepository.findByEmail(email);
+        if(user == null) {
+            throw new GeneralException(ErrorCode.UM_EMAIL_NOT_EXIST);
+        }
+        if(user.getOauthProviderName() != OAuthProvider.NOT_USE.getName()) {
+            throw new GeneralException(ErrorCode.UM_PW_RESET_EMAIL_IS_OAUTH);
+        }
+        String newPassword = randomUtil.getRandomString(8);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        return newPassword;
+    }
+
+    @Override
+    public void sendResetPasswordEmail(String email, String newPassword) {
+        final String content = "비밀번호 재설정 요청에 의해 무작위 비밀번호로 재설정되었습니다.\n새로운 비밀번호는 " + newPassword + " 입니다.";
+        mailService.sendEmail(email, resetPasswordEmailTitle, content);
     }
 }

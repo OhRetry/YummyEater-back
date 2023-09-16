@@ -26,6 +26,8 @@ public enum ErrorCode {
 
     //User Modify
     UM_WRONG_PASSWORD("UM00000", HttpStatus.OK, "비밀번호가 틀립니다."),
+    UM_EMAIL_NOT_EXIST("UM00001",  HttpStatus.OK, "존재하지 않는 이메일입니다."),
+    UM_PW_RESET_EMAIL_IS_OAUTH("UM00002", HttpStatus.OK, "OAuth로 가입된 이메일은 비밀번호 재설정이 불가능합니다."),
 
     //User OAuth Join
     UOJ_JOINTOKEN_EXPIRED("UOJ00000", HttpStatus.OK, "만료된 회원가입 토큰입니다."),
