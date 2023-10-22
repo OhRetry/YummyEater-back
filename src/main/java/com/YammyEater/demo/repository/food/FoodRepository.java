@@ -18,6 +18,9 @@ public interface FoodRepository extends JpaRepository<Food, Long>, FindFoodByCon
 
     Optional<Food> findById(Long id);
 
+    @Query("SELECT f FROM Food f JOIN FETCH f.user WHERE f.id in :ids")
+    List<Food> findWithUserByIDs(@Param("ids") List<Long> ids);
+
     @Modifying
     @Query(value = "UPDATE FROM Food food SET food.views = food.views + 1 WHERE food.id = :id")
     void increaseViews(@Param("id") Long id);
