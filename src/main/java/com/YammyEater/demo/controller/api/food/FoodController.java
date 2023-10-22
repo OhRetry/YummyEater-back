@@ -1,25 +1,19 @@
 package com.YammyEater.demo.controller.api.food;
 
 import com.YammyEater.demo.constant.error.ErrorCode;
+import com.YammyEater.demo.constant.food.FoodRankingPeriod;
+import com.YammyEater.demo.constant.food.FoodType;
 import com.YammyEater.demo.dto.ApiResponse;
-import com.YammyEater.demo.dto.food.FoodConditionalRequest;
-import com.YammyEater.demo.dto.food.FoodDetailResponse;
-import com.YammyEater.demo.dto.food.FoodModifyRequest;
-import com.YammyEater.demo.dto.food.FoodRegisterRequest;
-import com.YammyEater.demo.dto.food.FoodRegisterResponse;
-import com.YammyEater.demo.dto.food.FoodReviewConditionalRequest;
-import com.YammyEater.demo.dto.food.FoodReviewDto;
-import com.YammyEater.demo.dto.food.FoodReviewModifyRequest;
-import com.YammyEater.demo.dto.food.FoodReviewModifyResponse;
-import com.YammyEater.demo.dto.food.FoodReviewRegisterRequest;
-import com.YammyEater.demo.dto.food.FoodReviewRegisterResponse;
-import com.YammyEater.demo.dto.food.FoodSimpleResponse;
-import com.YammyEater.demo.dto.food.CategoryDto;
+import com.YammyEater.demo.dto.food.*;
+import com.YammyEater.demo.exception.GeneralException;
+import com.YammyEater.demo.repository.food.FoodRankingRepository;
+import com.YammyEater.demo.service.food.FoodRankingService;
 import com.YammyEater.demo.service.food.FoodReviewService;
 import com.YammyEater.demo.service.food.FoodService;
 import com.YammyEater.demo.service.food.CategoryService;
 import java.util.List;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +33,8 @@ public class FoodController {
     private final FoodService foodService;
     private final CategoryService categoryService;
     private final FoodReviewService foodReviewService;
+    private final FoodRankingService foodRankingService;
+    private final FoodRankingRepository foodRankingRepository;
 
     //ex
     //http://localhost:8080/api/food?type=RECIPE&categories=매운&sort=rating,desc&sort=id,desc&page=1size=5
@@ -62,6 +58,8 @@ public class FoodController {
     @GetMapping("api/food/{id}")
     public ApiResponse<FoodDetailResponse> getFoodById(@PathVariable(name = "id") Long id) {
         FoodDetailResponse res = foodService.findFoodById(id);
+        //인기 게시물 조회수 추가
+        foodRankingRepository.increaseFoodViews(res.id(), res.type());
         return ApiResponse.of(res);
     }
 
@@ -137,5 +135,16 @@ public class FoodController {
     ) {
         foodReviewService.deleteFoodReview(userId, reviewId);
         return ApiResponse.of(null);
+    }
+
+    @GetMapping("/api/food/mostViewed")
+    public ApiResponse<List<FoodRankResponse>> getFoodRank(
+            FoodRankingPeriod period,
+            FoodType type
+    ) {
+        if(period == null || type == null) {
+            throw new GeneralException(ErrorCode.BAD_REQUEST);
+        }
+        return ApiResponse.of(foodRankingService.getFoodRanking(period, type, 10));
     }
 }
