@@ -13,8 +13,15 @@ import com.YammyEater.demo.exception.jwt.JwtInvalidException;
 import com.YammyEater.demo.repository.user.EmailVerificationRepository;
 import com.YammyEater.demo.repository.user.UserRepository;
 import com.YammyEater.demo.service.mail.MailService;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,6 +42,8 @@ public class UserJoinServiceImpl implements UserJoinService {
     private int joinValidTimeAfterVerification;
 
     private final String verificationEmailTitle = "YammyEater 회원가입 인증번호 입니다.";
+    private String JOINCODE_MAIL_BODY;
+    private final String VERIFICATION_EMAIL_CODE_REPLACE_STRING = "@_CODE_@";
 
     private final UserRepository userRepository;
     private final EmailVerificationRepository emailVerificationRepository;
@@ -47,6 +56,13 @@ public class UserJoinServiceImpl implements UserJoinService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+
+    @PostConstruct
+    public void init() throws IOException {
+        ClassPathResource resource = new ClassPathResource("mail/mail-verification.html");
+        Path path = Paths.get(resource.getURI());
+        JOINCODE_MAIL_BODY = Files.readString(path);
+    }
 
     //인증코드를 이메일로 보냄
     @Override
@@ -67,8 +83,11 @@ public class UserJoinServiceImpl implements UserJoinService {
         emailVerificationRepository.save(verificationCode, new EmailVerification(email, false));
         emailVerificationRepository.setExpire(verificationCode, verificationExpireSecond);
 
+        //메일 본문 생성
+        String mailBody = JOINCODE_MAIL_BODY.replace(VERIFICATION_EMAIL_CODE_REPLACE_STRING, verificationCode);
+
         //인증코드 메일로 발송
-        mailService.sendEmail(email, verificationEmailTitle, verificationCode);
+        mailService.sendEmail(email, verificationEmailTitle, mailBody);
     }
 
     //이메일을 코드로 인증
