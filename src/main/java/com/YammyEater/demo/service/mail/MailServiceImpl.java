@@ -23,7 +23,7 @@ public class MailServiceImpl implements MailService {
                 final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
                 helper.setTo(sendTo);
                 helper.setSubject(title);
-                helper.setText(content);
+                helper.setText(content, true);
             };
             emailSender.send(preparator);
         }

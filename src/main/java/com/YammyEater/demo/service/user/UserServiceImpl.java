@@ -9,7 +9,13 @@ import com.YammyEater.demo.dto.user.UserInfoChangeRequest;
 import com.YammyEater.demo.exception.GeneralException;
 import com.YammyEater.demo.repository.user.UserRepository;
 import com.YammyEater.demo.service.mail.MailService;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +31,15 @@ public class UserServiceImpl implements UserService {
     private final MailService mailService;
 
     private final String resetPasswordEmailTitle = "YummyEater 비밀번호가 재설정되었습니다.";
+    private String RESETPASSWORD_EMAIL_BODY;
+    private final String RESETPASSWORD_EMAIL_NEWPW_REPLACE_STRING = "@_NEWPW_@";
+
+    @PostConstruct
+    public void init() throws IOException {
+        ClassPathResource resource = new ClassPathResource("mail/mail-newpw.html");
+        Path path = Paths.get(resource.getURI());
+        RESETPASSWORD_EMAIL_BODY = Files.readString(path);
+    }
 
     //어떤 이메일이 회원가입 되었는지 검사
     @Override
@@ -112,12 +127,13 @@ public class UserServiceImpl implements UserService {
         }
         String newPassword = randomUtil.getRandomString(8);
         user.setPassword(passwordEncoder.encode(newPassword));
+
         return newPassword;
     }
 
     @Override
     public void sendResetPasswordEmail(String email, String newPassword) {
-        final String content = "비밀번호 재설정 요청에 의해 무작위 비밀번호로 재설정되었습니다.\n새로운 비밀번호는 " + newPassword + " 입니다.";
-        mailService.sendEmail(email, resetPasswordEmailTitle, content);
+        String mailBody = RESETPASSWORD_EMAIL_BODY.replace(RESETPASSWORD_EMAIL_NEWPW_REPLACE_STRING, newPassword);
+        mailService.sendEmail(email, resetPasswordEmailTitle, mailBody);
     }
 }
