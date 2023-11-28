@@ -14,6 +14,7 @@ import com.YammyEater.demo.repository.user.EmailVerificationRepository;
 import com.YammyEater.demo.repository.user.UserRepository;
 import com.YammyEater.demo.service.mail.MailService;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -60,8 +61,8 @@ public class UserJoinServiceImpl implements UserJoinService {
     @PostConstruct
     public void init() throws IOException {
         ClassPathResource resource = new ClassPathResource("mail/mail-verification.html");
-        Path path = Paths.get(resource.getURI());
-        JOINCODE_MAIL_BODY = Files.readString(path);
+        InputStream ipt = resource.getInputStream();
+        JOINCODE_MAIL_BODY = new String(ipt.readAllBytes());
     }
 
     //인증코드를 이메일로 보냄
