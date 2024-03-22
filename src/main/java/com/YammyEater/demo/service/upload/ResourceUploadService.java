@@ -1,5 +1,6 @@
 package com.YammyEater.demo.service.upload;
 
+import java.util.UUID;
 import org.springframework.web.multipart.MultipartFile;
 
 /*
@@ -10,4 +11,8 @@ public interface ResourceUploadService {
     String uploadResource(MultipartFile resource);
     String getResourceKeyFromURL(String resourceURL);
     void deleteResourceByKey(String key);
+    default String createFileName(String uploadedName) {
+        String ext = uploadedName.substring(uploadedName.lastIndexOf("."));
+        return UUID.randomUUID().toString() + ext;
+    }
 }

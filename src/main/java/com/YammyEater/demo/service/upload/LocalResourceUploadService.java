@@ -69,9 +69,4 @@ public class LocalResourceUploadService implements ResourceUploadService {
     private String getWebPath(String resourcePath) {
         return RESOURCE_HOST + URL_PATH + resourcePath;
     }
-
-    private String createFileName(String uploadedName) {
-        String ext = uploadedName.substring(uploadedName.lastIndexOf("."));
-        return UUID.randomUUID().toString() + ext;
-    }
 }
