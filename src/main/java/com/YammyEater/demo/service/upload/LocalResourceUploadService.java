@@ -48,7 +48,7 @@ public class LocalResourceUploadService implements ResourceUploadService {
     }
 
     @Override
-    public void deleteResourceByKey(String key) {
+    public void deleteResource(String key) {
         File deleteFile = new File(getRealPath(key));
         deleteFile.delete();
     }

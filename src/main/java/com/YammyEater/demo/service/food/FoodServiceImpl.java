@@ -196,7 +196,7 @@ public class FoodServiceImpl implements FoodService {
         //연결된 자원 삭제
         for(FoodResource foodResource : food.getFoodResources()) {
             //파일을 삭제
-            resourceUploadService.deleteResourceByKey(foodResource.getKey());
+            resourceUploadService.deleteResource(foodResource.getKey());
         }
         //FoodResource 삭제
         foodResourceRepository.deleteAllByFood(food);
@@ -286,7 +286,7 @@ public class FoodServiceImpl implements FoodService {
             //삭제할 자원
             for(FoodResource foodResource : Sets.difference(originalFoodResources, newFoodResources)) {
                 foodResourceRepository.delete(foodResource);
-                resourceUploadService.deleteResourceByKey(foodResource.getKey());
+                resourceUploadService.deleteResource(foodResource.getKey());
             }
             //추가할 자원
             for(FoodResource foodResource : Sets.difference(newFoodResources, originalFoodResources)) {

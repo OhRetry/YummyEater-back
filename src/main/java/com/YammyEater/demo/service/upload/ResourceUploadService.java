@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface ResourceUploadService {
     String uploadResource(MultipartFile resource);
-    void deleteResourceByKey(String key);
+    void deleteResource(String key);
     String getURLFromKey(String key);
     default String createFileName(String uploadedName) {
         String ext = uploadedName.substring(uploadedName.lastIndexOf("."));
