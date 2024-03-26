@@ -4,15 +4,15 @@ spring:
       dev:
         - db-dev
         - db-h2
-        - upload-aws
+        - upload-aws_s3
       dev2:
         - db-dev
         - db-mysql
-        - upload-aws
+        - upload-aws_s3
       prod:
         - db-prod
         - db-mysql
-        - upload-aws
+        - upload-aws_s3
     include:
       - db
       - upload
