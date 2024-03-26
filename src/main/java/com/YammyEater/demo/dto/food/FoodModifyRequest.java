@@ -18,6 +18,6 @@ public record FoodModifyRequest(
         NutrientDto nutrient,
         @Length(max = 5000)
         String content,
-        List<String> resourceURLList
+        List<String> resourceKeys
 ) {
 }

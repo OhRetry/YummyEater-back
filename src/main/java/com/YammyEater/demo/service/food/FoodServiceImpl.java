@@ -28,6 +28,7 @@ import com.YammyEater.demo.repository.food.CategoryRepository;
 import com.YammyEater.demo.repository.upload.TempResourceRepository;
 import com.YammyEater.demo.repository.user.UserRepository;
 import com.YammyEater.demo.service.upload.ResourceUploadService;
+import com.YammyEater.demo.service.upload.TransactionResourceUploadService;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -54,6 +55,7 @@ public class FoodServiceImpl implements FoodService {
     private final FoodResourceRepository foodResourceRepository;
     private final TempResourceRepository tempResourceRepository;
     private final ResourceUploadService resourceUploadService;
+    private final TransactionResourceUploadService transactionResourceUploadService;
 
     @Override
     public Page<FoodSimpleResponse> findFoodByCondition(FoodConditionalRequest foodConditionalRequest, Pageable pageable) {
@@ -137,9 +139,8 @@ public class FoodServiceImpl implements FoodService {
         }
 
         //업로드한 자원의 정보를 FoodResource로 저장
-        if(foodRegisterRequest.resourceURLList() != null) {
-            for (String resourceURL : foodRegisterRequest.resourceURLList()) {
-                String resourceKey = resourceUploadService.getResourceKeyFromURL(resourceURL);
+        if(foodRegisterRequest.resourceKeys() != null) {
+            for (String resourceKey : foodRegisterRequest.resourceKeys()) {
                 //자원 주소가 잘못되면 키가 null
                 //임시 업로드 자원 목록에 존재해야함
                 if(resourceKey == null || !tempResourceRepository.existsById(resourceKey)) {
@@ -197,7 +198,7 @@ public class FoodServiceImpl implements FoodService {
         //연결된 자원 삭제
         for(FoodResource foodResource : food.getFoodResources()) {
             //파일을 삭제
-            resourceUploadService.deleteResourceByKey(foodResource.getKey());
+            transactionResourceUploadService.deleteResourceAsyncAfterCommit(foodResource.getKey());
         }
         //FoodResource 삭제
         foodResourceRepository.deleteAllByFood(food);
@@ -271,13 +272,12 @@ public class FoodServiceImpl implements FoodService {
         if(foodModifyRequest.content() != null) {
             food.getArticle().setContent(foodModifyRequest.content());
         }
-        if(foodModifyRequest.resourceURLList() != null) {
+        if(foodModifyRequest.resourceKeys() != null) {
             //기존에 등록되어 있던 FoodResource
             Set<FoodResource> originalFoodResources = new HashSet<>(food.getFoodResources());
             //새로 요청된 FoodResource
             Set<FoodResource> newFoodResources = new HashSet<>();
-            for(String resourceURL : foodModifyRequest.resourceURLList()) {
-                String resourceKey = resourceUploadService.getResourceKeyFromURL(resourceURL);
+            for(String resourceKey : foodModifyRequest.resourceKeys()) {
                 if(resourceKey == null) {
                     continue;
                 }
@@ -288,7 +288,7 @@ public class FoodServiceImpl implements FoodService {
             //삭제할 자원
             for(FoodResource foodResource : Sets.difference(originalFoodResources, newFoodResources)) {
                 foodResourceRepository.delete(foodResource);
-                resourceUploadService.deleteResourceByKey(foodResource.getKey());
+                transactionResourceUploadService.deleteResourceAsyncAfterCommit(foodResource.getKey());
             }
             //추가할 자원
             for(FoodResource foodResource : Sets.difference(newFoodResources, originalFoodResources)) {
