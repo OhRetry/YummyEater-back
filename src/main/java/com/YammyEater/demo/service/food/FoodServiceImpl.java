@@ -28,6 +28,7 @@ import com.YammyEater.demo.repository.food.CategoryRepository;
 import com.YammyEater.demo.repository.upload.TempResourceRepository;
 import com.YammyEater.demo.repository.user.UserRepository;
 import com.YammyEater.demo.service.upload.ResourceUploadService;
+import com.YammyEater.demo.service.upload.TransactionResourceUploadService;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -54,6 +55,7 @@ public class FoodServiceImpl implements FoodService {
     private final FoodResourceRepository foodResourceRepository;
     private final TempResourceRepository tempResourceRepository;
     private final ResourceUploadService resourceUploadService;
+    private final TransactionResourceUploadService transactionResourceUploadService;
 
     @Override
     public Page<FoodSimpleResponse> findFoodByCondition(FoodConditionalRequest foodConditionalRequest, Pageable pageable) {
@@ -196,7 +198,7 @@ public class FoodServiceImpl implements FoodService {
         //연결된 자원 삭제
         for(FoodResource foodResource : food.getFoodResources()) {
             //파일을 삭제
-            resourceUploadService.deleteResource(foodResource.getKey());
+            transactionResourceUploadService.deleteResourceAsyncAfterCommit(foodResource.getKey());
         }
         //FoodResource 삭제
         foodResourceRepository.deleteAllByFood(food);
@@ -286,7 +288,7 @@ public class FoodServiceImpl implements FoodService {
             //삭제할 자원
             for(FoodResource foodResource : Sets.difference(originalFoodResources, newFoodResources)) {
                 foodResourceRepository.delete(foodResource);
-                resourceUploadService.deleteResource(foodResource.getKey());
+                transactionResourceUploadService.deleteResourceAsyncAfterCommit(foodResource.getKey());
             }
             //추가할 자원
             for(FoodResource foodResource : Sets.difference(newFoodResources, originalFoodResources)) {
