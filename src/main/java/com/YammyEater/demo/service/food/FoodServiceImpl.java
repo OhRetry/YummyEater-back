@@ -137,9 +137,8 @@ public class FoodServiceImpl implements FoodService {
         }
 
         //업로드한 자원의 정보를 FoodResource로 저장
-        if(foodRegisterRequest.resourceURLList() != null) {
-            for (String resourceURL : foodRegisterRequest.resourceURLList()) {
-                String resourceKey = resourceUploadService.getResourceKeyFromURL(resourceURL);
+        if(foodRegisterRequest.resourceKeys() != null) {
+            for (String resourceKey : foodRegisterRequest.resourceKeys()) {
                 //자원 주소가 잘못되면 키가 null
                 //임시 업로드 자원 목록에 존재해야함
                 if(resourceKey == null || !tempResourceRepository.existsById(resourceKey)) {
@@ -271,13 +270,12 @@ public class FoodServiceImpl implements FoodService {
         if(foodModifyRequest.content() != null) {
             food.getArticle().setContent(foodModifyRequest.content());
         }
-        if(foodModifyRequest.resourceURLList() != null) {
+        if(foodModifyRequest.resourceKeys() != null) {
             //기존에 등록되어 있던 FoodResource
             Set<FoodResource> originalFoodResources = new HashSet<>(food.getFoodResources());
             //새로 요청된 FoodResource
             Set<FoodResource> newFoodResources = new HashSet<>();
-            for(String resourceURL : foodModifyRequest.resourceURLList()) {
-                String resourceKey = resourceUploadService.getResourceKeyFromURL(resourceURL);
+            for(String resourceKey : foodModifyRequest.resourceKeys()) {
                 if(resourceKey == null) {
                     continue;
                 }

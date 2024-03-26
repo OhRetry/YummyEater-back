@@ -20,6 +20,6 @@ public record FoodRegisterRequest(
         NutrientDto nutrient,
         @NotBlank @Length(max = 5000)
         String content,
-        List<String> resourceURLList
+        List<String> resourceKeys
 ) {
 }

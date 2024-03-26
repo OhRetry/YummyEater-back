@@ -48,15 +48,6 @@ public class LocalResourceUploadService implements ResourceUploadService {
     }
 
     @Override
-    public String getResourceKeyFromURL(String resourceURL) {
-        int begin = resourceURL.lastIndexOf(URL_PATH);
-        if(begin == -1) {
-            return null;
-        }
-        return resourceURL.substring(begin + URL_PATH.length());
-    }
-
-    @Override
     public void deleteResourceByKey(String key) {
         File deleteFile = new File(getRealPath(key));
         deleteFile.delete();
