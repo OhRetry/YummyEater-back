@@ -44,7 +44,7 @@ public class LocalResourceUploadService implements ResourceUploadService {
             throw new ResourceUploadException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         tempResourceRepository.save(new TempResource(filename, LocalDateTime.now()));
-        return getWebPath(filename);
+        return filename;
     }
 
     @Override
@@ -53,11 +53,12 @@ public class LocalResourceUploadService implements ResourceUploadService {
         deleteFile.delete();
     }
 
-    private String getRealPath(String resourcePath) {
-        return UPLOAD_ROOT + resourcePath;
+    @Override
+    public String getURLFromKey(String key) {
+        return RESOURCE_HOST + URL_PATH + key;
     }
 
-    private String getWebPath(String resourcePath) {
-        return RESOURCE_HOST + URL_PATH + resourcePath;
+    private String getRealPath(String resourcePath) {
+        return UPLOAD_ROOT + resourcePath;
     }
 }
