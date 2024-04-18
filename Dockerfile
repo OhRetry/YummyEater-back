@@ -3,6 +3,8 @@ WORKDIR /app
 
 COPY ./build.gradle ./settings.gradle ./gradlew ./
 COPY ./gradle ./gradle
+#실행권한 부여
+RUN chmod +x ./gradlew
 RUN dos2unix gradlew
 RUN ./gradlew build -x test --parallel --continue > /dev/null 2>&1 || true
 
