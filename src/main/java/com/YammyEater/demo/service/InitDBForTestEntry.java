@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class InitDBForTestEntry {
-    @Value("${spring.jpa.hibernate.ddl-auto}")
-    private String DDL_AUTO;
-
     @Autowired
     InitDBForTest initDBForTest;
 
+    @Value("${flag_init_dummy_data}")
+    boolean FLAG_INIT_DUMMY_DATA;
+
     @PostConstruct
     public void InitEntry() {
-        if(DDL_AUTO.startsWith("create")) {
+        if(FLAG_INIT_DUMMY_DATA) {
             initDBForTest.init();
         }
     }
