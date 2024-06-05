@@ -65,9 +65,8 @@ public class InitDBForTest {
 
     private void initCategory() {
         for (String categoryName : categoryNames) {
-            Category newCategory = Category.builder().name(categoryName).build();
-            categoryRepository.save(newCategory);
-            categories.add(newCategory);
+            Category category = categoryRepository.findByName(categoryName);
+            categories.add(category);
         }
     }
 

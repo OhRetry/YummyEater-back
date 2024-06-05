@@ -58,3 +58,5 @@ jwt:
   access_token_expire_minute: 30
   refresh_token_expire_minute: 20160
   oauth_join_token_expire_minute: 120
+
+flag_init_dummy_data: ${INIT_DUMMY_DATA}
