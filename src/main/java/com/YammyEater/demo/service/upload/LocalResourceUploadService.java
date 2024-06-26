@@ -44,34 +44,21 @@ public class LocalResourceUploadService implements ResourceUploadService {
             throw new ResourceUploadException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         tempResourceRepository.save(new TempResource(filename, LocalDateTime.now()));
-        return getWebPath(filename);
+        return filename;
     }
 
     @Override
-    public String getResourceKeyFromURL(String resourceURL) {
-        int begin = resourceURL.lastIndexOf(URL_PATH);
-        if(begin == -1) {
-            return null;
-        }
-        return resourceURL.substring(begin + URL_PATH.length());
-    }
-
-    @Override
-    public void deleteResourceByKey(String key) {
+    public void deleteResource(String key) {
         File deleteFile = new File(getRealPath(key));
         deleteFile.delete();
     }
 
+    @Override
+    public String getURLFromKey(String key) {
+        return RESOURCE_HOST + URL_PATH + key;
+    }
+
     private String getRealPath(String resourcePath) {
         return UPLOAD_ROOT + resourcePath;
-    }
-
-    private String getWebPath(String resourcePath) {
-        return RESOURCE_HOST + URL_PATH + resourcePath;
-    }
-
-    private String createFileName(String uploadedName) {
-        String ext = uploadedName.substring(uploadedName.lastIndexOf("."));
-        return UUID.randomUUID().toString() + ext;
     }
 }

@@ -1,5 +1,7 @@
 package com.YammyEater.demo.service.upload;
 
+import java.util.UUID;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.multipart.MultipartFile;
 
 /*
@@ -8,6 +10,14 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface ResourceUploadService {
     String uploadResource(MultipartFile resource);
-    String getResourceKeyFromURL(String resourceURL);
-    void deleteResourceByKey(String key);
+    void deleteResource(String key);
+    String getURLFromKey(String key);
+    default String createFileName(String uploadedName) {
+        String ext = uploadedName.substring(uploadedName.lastIndexOf("."));
+        return UUID.randomUUID().toString() + ext;
+    }
+    @Async
+    default void deleteResourceAsync(String key) {
+        deleteResource(key);
+    }
 }

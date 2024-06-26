@@ -10,6 +10,7 @@ import com.YammyEater.demo.exception.GeneralException;
 import com.YammyEater.demo.repository.user.UserRepository;
 import com.YammyEater.demo.service.mail.MailService;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,8 +38,8 @@ public class UserServiceImpl implements UserService {
     @PostConstruct
     public void init() throws IOException {
         ClassPathResource resource = new ClassPathResource("mail/mail-newpw.html");
-        Path path = Paths.get(resource.getURI());
-        RESETPASSWORD_EMAIL_BODY = Files.readString(path);
+        InputStream ipt = resource.getInputStream();
+        RESETPASSWORD_EMAIL_BODY = new String(ipt.readAllBytes());
     }
 
     //어떤 이메일이 회원가입 되었는지 검사

@@ -25,8 +25,12 @@ public class uploadController {
 
     @PostMapping("/upload")
     public ApiResponse<UploadResponse> uploadResource(@RequestParam MultipartFile resource) {
-        String resourceURL = resourceUploadService.uploadResource(resource);
-        return ApiResponse.of(new UploadResponse(resourceURL));
+        String resourceKey = resourceUploadService.uploadResource(resource);
+        return ApiResponse.of(
+                UploadResponse.builder()
+                        .resourceKey(resourceKey)
+                        .resourceURL(resourceUploadService.getURLFromKey(resourceKey))
+                        .build()
+        );
     }
-
 }
